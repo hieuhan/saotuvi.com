@@ -1,12 +1,24 @@
 const { validationResult } = require('express-validator');
-const userModel = require('../models/user.model');
+const { User } = require('../models');
 const bcrypt = require('../utils/bcrypt');
-const redis = require('../../database/init.redis');
+const redis = require('../utils/redis');
 const jwt = require('../utils/jwt');
+const authConfig = require('../../configs/auth');
 
-module.exports.login = (request, response, next) => {
+module.exports.login = async (request, response, next) => {
     try {
-        response.render('admin/auth/login', { title: 'Đăng nhập hệ thống quản trị nội dung saotuvi.com', dataInput : {}, error: {}, layout: './admin/layouts/auth' });
+        // const hash = await bcrypt.hashPassword('Hthmanutd1011$');
+
+        // //seed
+        // User.create({
+        //     email: 'hantrunghieu@gmail.com',
+        //     password: hash
+        // }).then((data) => {
+        //     console.log(data)
+        // }).catch((error) => {
+        //     console.error(error)
+        // })
+        response.render('admin/auth/login', { dataInput: {}, error: {}, message: '', layout: './admin/layouts/auth' });
     } catch (error) {
         next(error);
     }
@@ -16,87 +28,100 @@ module.exports.loginPost = async (request, response, next) => {
     try {
         const { email, password, comeback } = request.body;
 
+        const dataInput = { email, password };
+
         const errors = validationResult(request);
 
         if (!errors.isEmpty()) {
-            //request.flash('fail', 'Please check your form')
             return response.render('admin/auth/login', {
-                title: 'Login To Your Account',
                 error: errors.mapped(),
-                dataInput: { email, password },
+                message: '',
+                dataInput: dataInput,
                 layout: './admin/layouts/auth'
-                //flashMessage: Flash.getMessage(req)
             });
         }
 
-        const userExists = await userModel.findOne({
+        const userExist = await User.findOne({
             email
         });
 
-        if(!userExists){
-
+        if (!userExist) {
+            return response.render('admin/auth/login', {
+                error: {},
+                message: 'Thông tin đăng nhập không chính xác.',
+                dataInput: dataInput,
+                layout: './admin/layouts/auth'
+            });
         }
 
-        const passwordIsValid = await bcrypt.passwordCompare(password, userExists.password);
+        const passwordIsValid = await bcrypt.passwordCompare(password, userExist.password);
 
-        if(!passwordIsValid)
-        {
-
+        if (!passwordIsValid) {
+            return response.render('admin/auth/login', {
+                error: {},
+                message: 'Thông tin đăng nhập không chính xác.',
+                dataInput: dataInput,
+                layout: './admin/layouts/auth'
+            });
         }
 
-        const accessToken = await jwt.signAccessToken(userExists._id);
-        const refreshToken = await jwt.signRefreshToken(userExists._id);
+        const { accessToken, refreshToken } = await jwt.generateTokens(userExist._id);
 
-        response.cookie('stv_token', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60
+        if (accessToken && refreshToken) {
+            response.cookie(authConfig.COOKIE_JWT_ACCESS_SECRET_NAME, accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 30 * 24 * 60 * 60 * 100
+            });
+
+            response.cookie(authConfig.COOKIE_JWT_REFRESH_SECRET_NAME, refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                maxAge: 3.154e10 // 1 year
+            });
+
+            return response.redirect('/stv');
+        }
+
+        return response.render('admin/auth/login', {
+            error: {},
+            message: 'Vui lòng thử lại sau.',
+            dataInput: dataInput,
+            layout: './admin/layouts/auth'
         });
-
-        response.cookie('stv_rtoken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 365 * 24 * 60 * 60
-        });
-        
-        return response.redirect('/stv');
-
-        response.render('admin/auth/login', { title: 'Đăng nhập hệ thống quản trị nội dung saotuvi.com', dataInput : {}, error: {}, layout: './admin/layouts/auth' });
     } catch (error) {
         next(error);
     }
-}
 
-module.exports.refreshToken = (request, response, next) => {
-    try {
-        
-    } catch (error) {
-        next(error);
-    }
+    response.render('admin/auth/login', { dataInput: {}, error: {}, layout: './admin/layouts/auth' });
 }
 
 module.exports.logout = async (request, response, next) => {
     try {
-        const refreshToken = req.cookies.stv_token;
+        const refreshToken = request.cookies[authConfig.COOKIE_JWT_REFRESH_SECRET_NAME];
 
-        if(refreshToken)
-        {
-            const { userId } = await jwt.verifyRefreshToken(refreshToken);
+        if (refreshToken) {
+            const { payload, reply } = await jwt.verifyRefreshToken(refreshToken);
 
-            if(userId)
-            {
-                redis.del(userId.toString(), (error, reply) => {
-                    if(error)
-                    {
+            if (payload && reply) {
 
-                    }
+                response.cookie(authConfig.COOKIE_JWT_ACCESS_SECRET_NAME, '', {
+                    maxAge: 0,
+                    httpOnly: true
+                });
 
-                    response.redirect('/');
-                })
+                response.cookie(authConfig.COOKIE_JWT_REFRESH_SECRET_NAME, '', {
+                    maxAge: 0,
+                    httpOnly: true
+                });
+
+                await redis.del(payload.userId.toString());
             }
         }
 
     } catch (error) {
         next(error);
     }
+
+    response.redirect('/');
 }

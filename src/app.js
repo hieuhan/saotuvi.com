@@ -7,7 +7,9 @@ const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const ejsLayouts = require('express-ejs-layouts');
+//const session = require('express-session');
 const cookieParser = require('cookie-parser');
+//const flash = require('connect-flash');
 const adminRoutes = require('./admin/routes');
 const routes = require('./routes');
 
@@ -19,7 +21,7 @@ require('./database/init.redis');
 
 // user middleware
 app.use(helmet());
-app.use(morgan('combined'));
+app.use(morgan('tiny'));
 // compress responses
 app.use(compression());
 
@@ -45,10 +47,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/css', express.static(__dirname + 'public/css'))
 
 // view engine setup
-app.use(ejsLayouts);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
+app.use(ejsLayouts);
 
 // routers
 adminRoutes(app);
@@ -56,6 +57,7 @@ routes(app);
 
 // setting 404 middleware
 app.use((request, response, next) => {
+    //response.locals.message = request.flash();
     const error = {};
     error.status = 404;
     next(error);
@@ -65,19 +67,21 @@ app.use((request, response, next) => {
 // for internal server error above code won't execute
 
 app.use((error, request, response, next) => {
-    let path = 'error/404', pathServerIntenerError = 'error/500';
+    let path = 'error/404', pathServerIntenerError = 'error/500',
+    layout = './layouts/error';
     console.log(error)
     if(request.originalUrl.startsWith('/stv/'))
     {
         path = 'admin/error/404';
-        pathServerIntenerError = 'admin/error/500'
+        pathServerIntenerError = 'admin/error/500';
+        layout = './admin/layouts/error';
     }
 
     if (error.status === 404) {
-        return response.render(path, {flashMessage: {}});
+        return response.render(path, {flashMessage: {}, layout: layout });
     }
     
-    response.render(pathServerIntenerError, {flashMessage: {}});
+    response.render(pathServerIntenerError, {flashMessage: {}, layout: layout});
 })
 
 

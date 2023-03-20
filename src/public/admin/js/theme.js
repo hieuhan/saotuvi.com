@@ -1126,7 +1126,7 @@ var dropzoneInit = function dropzoneInit() {
     userOptions = userOptions ? userOptions : {};
     var data = userOptions.data ? userOptions.data : {};
     var options = merge({
-      url: '/assets/php/',
+      url: '//admin/php/',
       addRemoveLinks: false,
       previewsContainer: item.querySelector(Selector.DZ_PREVIEW),
       previewTemplate: item.querySelector(Selector.DZ_PREVIEW).innerHTML,

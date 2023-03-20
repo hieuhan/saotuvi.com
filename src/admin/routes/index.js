@@ -1,4 +1,9 @@
+const authorization = require('../middlewares/auth');
+
 module.exports = app => {
-    app.use('/stv', require('./dashboard.route'));
-    app.use('/stv', require('./auth.route'));
+    app.use('/stv/auth', require('./auth.route'));
+    app.use('/stv/user', authorization, require('./user.route'));
+    app.use('/stv/category', authorization, require('./category.route'));
+    app.use('/stv/error', authorization, require('./error.route'));
+    app.use('/stv', authorization, require('./dashboard.route'));
 }
