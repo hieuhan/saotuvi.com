@@ -1,25 +1,25 @@
 <div class="modal-header px-5 position-relative modal-shape-header bg-shape">
     <div class="position-relative z-index-1 light">
-        <h4 class="mb-0 text-white" id="authentication-modal-label">Tạo tài khoản</h4>
+        <h4 class="mb-0 text-white" id="authentication-modal-label">Tạo chuyên mục</h4>
         <!-- <p class="fs--1 mb-0 text-white">Please create your free Falcon account</p> -->
     </div><button class="btn-close btn-close-white position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal"
         aria-label="Close"></button>
 </div>
 <div class="modal-body py-4 px-5">
-    <form action="/stv/user/create" method="post" data-ajax="true">
+    <form action="/stv/category/create" method="put" data-ajax="true">
         <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Email</label>
-            <input class="form-control" name="email" value="<%= dataInput.email && dataInput.email %>" type="text" autocomplete="off" />
+            <label class="form-label" for="modal-auth-email">Tên chuyên mục</label>
+            <input class="form-control" name="email" value="" type="text" autocomplete="off" />
             <label for="email" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Mật khẩu</label>
-            <input class="form-control" name="password" value="<%= dataInput.password && dataInput.password %>" type="password" autocomplete="off" />
+            <label class="form-label" for="modal-auth-email">Mô tả</label>
+            <input class="form-control" name="password" value="" type="password" autocomplete="off" />
             <label for="password" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Mật khẩu xác nhận</label>
-            <input class="form-control" name="confirmpassword" value="<%= dataInput.confirmpassword && dataInput.confirmpassword %>" type="password" autocomplete="off" />
+            <label class="form-label" for="modal-auth-email">Url</label>
+            <input class="form-control" name="confirmpassword" value="" type="password" autocomplete="off" />
             <label for="confirmpassword" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-3"><button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Lưu thông tin</button></div>

@@ -9,15 +9,15 @@ module.exports.login = async (request, response, next) => {
     try {
         // const hash = await bcrypt.hashPassword('Hthmanutd1011$');
 
-        // //seed
-        // User.create({
-        //     email: 'hantrunghieu@gmail.com',
-        //     password: hash
-        // }).then((data) => {
-        //     console.log(data)
-        // }).catch((error) => {
-        //     console.error(error)
-        // })
+        //seed
+        User.create({
+            email: 'hantrunghieu@gmail.com',
+            password: 'Hthmanutd1011$'
+        }).then((data) => {
+            console.log(data)
+        }).catch((error) => {
+            console.error(error)
+        })
         response.render('admin/auth/login', { dataInput: {}, error: {}, message: '', layout: './admin/layouts/auth' });
     } catch (error) {
         next(error);

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
 module.exports = {
-    User : require('./user.model')(mongoose)
+    User : require('./user.model')(mongoose),
+    Category : require('./category.model')(mongoose),
+    Article : require('./article.model')(mongoose)
 }
