@@ -12,6 +12,7 @@ const cookieParser = require('cookie-parser');
 //const flash = require('connect-flash');
 const adminRoutes = require('./admin/routes');
 const routes = require('./routes');
+const utils = require('./utils');
 
 //mongoose 
 require('./database/init.mongodb');
@@ -45,6 +46,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Example for other folders - not required
 // app.use('/css', express.static(__dirname + 'public/css'))
+
+utils(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

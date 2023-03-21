@@ -3,17 +3,17 @@ module.exports = mongoose => {
         {
             title: {
                 type: String,
-                required: [true, 'Vui lòng nhập tiêu đề bài viết.'],
+                required: true,
                 trim: true,
                 unique: true
             },
             summary: String,
             content: {
                 type: String,
-                required: [true, 'Vui lòng nhập nội dung bài viết.']
+                required: true
             },
             slug: { type: String, required: true, unique: true },
-            mainCategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+            category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
             categories: [
                 {
                     type: mongoose.Schema.Types.ObjectId,
@@ -33,32 +33,30 @@ module.exports = mongoose => {
                 }
             ],
             image: String,
-            // metadata:{
-
-            // },
+            metaTitle: String,
+            metaDescription: String,
+            metaKeywords: String,
+            h1Tag: String,
+            canonical: String,
+            isIndex: { type: Boolean, default: true },
+            isDeleted: { type: Boolean, default: false },
+            createdBy: String,
             createdAt: { type: Date, default: Date.now },
-            updatedBy: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' 
-            },
-            updatedAt: { type: Date },
-            publishedBy: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' 
-            },
-            publishedAt: { type: Date },
-            republishedBy: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' 
-            },
-            republishedAt: { type: Date }
+            updatedBy: String,
+            updatedAt: Date,
+            deletedBy: String,
+            deletedAt: Date,
+            publishedBy: String,
+            publishedAt: Date,
+            republishedBy: String,
+            republishedAt: Date
         },
         {
             collection: 'articles',
             timestamps: false
         });
 
-        articleSchema.index({ title: 'text', summary: 'text', content: 'text' });
+        articleSchema.index({ title: 'text', summary: 'text', content: 'text', slug: 'text' });
 
     return mongoose.model('Article', articleSchema);
 }

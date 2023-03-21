@@ -17,27 +17,22 @@ module.exports = mongoose => {
             parentSlug: String,
             level: String,
             treeOrder: String,
+            displayOrder: Number,
             image: String,
             controllerAction: String,
-            metaData:{
-                metaTitle: String,
-                metaDescription: String,
-                metaKeywords: String,
-                h1Tag: String,
-                canonical: String,
-                isIndex: { type: Boolean, default: true }
-            },
-            displayOrder: Number,
-            createdBy: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' 
-            },
+            metaTitle: String,
+            metaDescription: String,
+            metaKeywords: String,
+            h1Tag: String,
+            canonical: String,
+            isIndex: { type: Boolean, default: true },
+            isDeleted: { type: Boolean, default: false },
+            createdBy: String,
             createdAt: { type: Date, default: Date.now },
-            updatedBy: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                ref: 'User' 
-            },
-            updatedAt: { type: Date }
+            updatedBy: String,
+            updatedAt: Date,
+            deletedBy: String,
+            deletedAt: Date
         },
         {
             collection: 'categories',

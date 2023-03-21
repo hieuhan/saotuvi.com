@@ -2,27 +2,31 @@ const bcrypt = require('../utils/bcrypt');
 
 module.exports = mongoose => {
     const userSchema = mongoose.Schema({
+        username: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+            unique: true
+        },
         email: {
             type: String,
-            required: [true, 'Vui lòng nhập email.'],
+            required: false,
             trim: true,
             lowercase: true,
             unique: true
         },
         password: {
             type: String,
-            require: [true, 'Vui lòng nhập mật khẩu.'],
+            require: true,
             //select: false
         },
+        buildIn: { type: Boolean, default: false },
+        isDeleted: { type: Boolean, default: false },
         // roles: {
         //     type: Array,
         //     enum: ["user", "admin"],
         //     default: ['user']
-        // },
-        // status: {
-        //     type: Number,
-        //     default: 1,
-        //     //required: [ true, 'Vui lòng chọn trạng thái của tài khoản.' ]
         // },
         lastLoginAt: { type: Date },
         deletedAt: { type: Date },
@@ -35,7 +39,7 @@ module.exports = mongoose => {
             timestamps: false
         });
 
-    userSchema.index({ email: 'text' });
+    userSchema.index({ username: 'text', email: 'text' });
 
     userSchema.pre('save', async function (next) {
         // 1) Only run this function if password was actually modified

@@ -8,16 +8,18 @@ const authConfig = require('../../configs/auth');
 module.exports.login = async (request, response, next) => {
     try {
         // const hash = await bcrypt.hashPassword('Hthmanutd1011$');
-
+        //await User.deleteMany();
         //seed
-        User.create({
-            email: 'hantrunghieu@gmail.com',
-            password: 'Hthmanutd1011$'
-        }).then((data) => {
-            console.log(data)
-        }).catch((error) => {
-            console.error(error)
-        })
+        // User.create({
+        //     username: 'hieuht',
+        //     email: 'hantrunghieu@gmail.com',
+        //     password: 'Hthmanutd1011$',
+        //     buildIn: true
+        // }).then((data) => {
+        //     console.log(data)
+        // }).catch((error) => {
+        //     console.error(error)
+        // })
         response.render('admin/auth/login', { dataInput: {}, error: {}, message: '', layout: './admin/layouts/auth' });
     } catch (error) {
         next(error);
@@ -26,9 +28,9 @@ module.exports.login = async (request, response, next) => {
 
 module.exports.loginPost = async (request, response, next) => {
     try {
-        const { email, password, comeback } = request.body;
+        const { username, password, comeback } = request.body;
 
-        const dataInput = { email, password };
+        const dataInput = { username, password };
 
         const errors = validationResult(request);
 
@@ -42,7 +44,7 @@ module.exports.loginPost = async (request, response, next) => {
         }
 
         const userExist = await User.findOne({
-            email
+            username
         });
 
         if (!userExist) {

@@ -5,21 +5,44 @@ var app = {
     events: function () {
         $(document).on('click', '#popup', function (e) {
             e.preventDefault();
-            var self = $(this), urlRequest = self.data('url') || '';
+            try {
+                var self = $(this), urlRequest = self.data('url') || '';
 
-            if (urlRequest.trim().length > 0) {
-                app.fetchData({
-                    url: urlRequest,
-                    dataType: 'html',
-                    type: 'GET'
-                }).then((response) => {
-                    const modalContent = $('#modal').find('.modal-content').first();
-                    modalContent.html(response);
-                    $('#modal').modal('show');
-                });
+                if (urlRequest.trim().length > 0) {
+                    app.fetchData({
+                        url: urlRequest,
+                        dataType: 'html',
+                        type: 'GET'
+                    }).then((response) => {
+                        const modalContent = $('#modal').find('.modal-content').first();
+                        modalContent.html(response);
+                        $('#modal').modal('show');
+                    });
+                }
+            } catch (error) {
+                console.error(error);
             }
         });
+        $(document).on('click', '.select-image', function (e) {
+            e.preventDefault();
+            try {
+                var self = $(this), urlRequest = self.data('url') || '';
 
+                if (urlRequest.trim().length > 0) {
+                    app.fetchData({
+                        url: urlRequest,
+                        dataType: 'html',
+                        type: 'GET'
+                    }).then((response) => {
+                        const modalContent = $('#image-modal').find('.modal-content').first();
+                        modalContent.html(response);
+                        $('#image-modal').modal('show');
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
         $(document).on('submit', 'form[data-ajax="true"]', function (event) {
             var form = $(this);
             $.ajax({
@@ -31,6 +54,7 @@ var app = {
                     form.find('label.form-check-label').text('');
                 }
             }).done(function (response) {
+                console.log(response)
                 if (!response.success) {
                     if (response.error) {
                         $.each(response.error, function (index, item) {
@@ -53,14 +77,14 @@ var app = {
                 type: options.type || 'GET',
                 data: options.data || {},
                 dataType: options.dataType || 'json',
-                beforeSend: options.beforeSend || function(){},
+                beforeSend: options.beforeSend || function () { },
                 success: function (data) {
                     resolve(data);
                 },
                 error: function (error) {
                     reject(error);
                 }
-            }).always(options.always || function(){});
+            }).always(options.always || function () { });
         });
     },
     bindTableData: function (path, destination) {
@@ -81,7 +105,7 @@ var app = {
     addParam: function (currentUrl, key, val) {
         var url = new URL(currentUrl);
         url.searchParams.set(key, val);
-        return url.href; 
+        return url.href;
     },
     setQueryParameter: function (uri, key, value) {
         var re = new RegExp("([?&])(" + key + "=)[^&#]*", "g");

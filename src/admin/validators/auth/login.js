@@ -1,17 +1,19 @@
 const { body } = require('express-validator');
 
 module.exports = [
-    body('email')
-        .not().isEmpty().withMessage('Vui lòng nhập email')
-        .normalizeEmail()
-        // .custom(async email => {
-        //     const emailId = await User.findOne({email})
-        //     if(!emailId) {
-        //         return Promise.reject('No user is exists with this email')
-        //     }
-        //     return true
-        // })
-        .isEmail().withMessage('Email không hợp lệ'),
+    body('username')
+        .not().isEmpty().withMessage('Vui lòng nhập tên truy cập'),
+    // body('email')
+    //     .not().isEmpty().withMessage('Vui lòng nhập email')
+    //     .normalizeEmail()
+    //     // .custom(async email => {
+    //     //     const emailId = await User.findOne({email})
+    //     //     if(!emailId) {
+    //     //         return Promise.reject('No user is exists with this email')
+    //     //     }
+    //     //     return true
+    //     // })
+    //     .isEmail().withMessage('Email không hợp lệ'),
     body('password')
         .not().isEmpty().withMessage('Vui lòng nhập mật khẩu')
         //.isLength({ min: 6 }).withMessage('Vui lòng nhập mật khẩu tối thiểu 6 ký tự')

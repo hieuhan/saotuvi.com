@@ -18,10 +18,10 @@
           </div>
           <form action="/stv/auth/login" method="post">
             <div class="mb-3">
-              <input class="form-control" type="text" name="email" value="<%= dataInput.email && dataInput.email %>"
-                placeholder="Địa chỉ Email" />
+              <input class="form-control" type="text" name="username" value="<%= dataInput.username && dataInput.username %>"
+                placeholder="Tên truy cập" />
               <label class="form-check-label mb-0 text-danger">
-                <%= error.email && error.email.msg %>
+                <%= error.username && error.username.msg %>
               </label>
             </div>
             <div class="mb-3">

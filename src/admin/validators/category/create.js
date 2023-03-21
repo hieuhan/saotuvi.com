@@ -2,7 +2,7 @@ const { body } = require('express-validator');
 const { Category } = require('../../models');
 
 module.exports = [
-    body('categoryName')
+    body('name')
         .not().isEmpty().withMessage('Vui lòng nhập tên chuyên mục')
         .normalizeEmail()
         .custom(async name => {

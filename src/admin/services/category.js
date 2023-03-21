@@ -1,19 +1,16 @@
 const { Category } = require('../models')
 
-class categoryService {
+class CategoryService {
     static getList = async ({
         id = '',
-        parentSlug = '',
-        treeOrder = '',
         limit = 50,
         skip = 0
     }) => {
         try {
-            const match = {}
+            const match = {};
 
-            if(id != '')
-            {
-                match['treeOrder'] = new RegExp(id, 'i')
+            if (id.trim().length > 0) {
+                match['treeOrder'] = new RegExp(id, 'i');
             }
 
             const categories = await Category.find(match, {
@@ -27,50 +24,73 @@ class categoryService {
                 displayOrder: 1,
                 createdAt: 1
             }).populate('parent', '_id name')
-            .sort({
-                displayOrder: 'asc',
-                treeOrder: 'asc'
-            });
+                .sort({
+                    treeOrder: 'asc'
+                });
 
             return categories;
         } catch (error) {
-            console.error(`categoryService::getList::${error}`);
+            console.error(`CategoryService::getList::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static putCategory = async (category) => {
+        try {
+            const createResult = await Category.create(category);
+            if (createResult) {
+                await this.patchTreeOrder({
+                    id: createResult._id,
+                    parentId: createResult.parent,
+                    displayOrder: createResult.displayOrder,
+                    createdAt: createResult.createdAt
+                });
+            }
+        } catch (error) {
+            console.error(`:::CategoryService.putCategory:::${error}`);
+            return Promise.reject(error);
         }
     }
 
     static patchTreeOrder = async ({
-        id,
-        level = '',
-        parent = '',
-        createdAt = new Date()
+        id, parentId = '', displayOrder = 0, createdAt = new Date()
     }) => {
         try {
-            //await Category.deleteMany();
-            let treeOrder = `${createdAt.toISOString()}:${id}`;
-            const parentSlug = await Category.findOne({ _id: parent });
+            let level = id,
+                treeOrder = `${displayOrder}:${createdAt.toISOString()}:${id}`;
+            const parent = await Category.findOne({ _id: parentId });
 
-            if(parentSlug){
-                treeOrder = `${ parentSlug.treeOrder }/${treeOrder}`;
-                level = `${parentSlug.level}/${id}`;
+            if (parent) {
+                treeOrder = `${parent.treeOrder}/${treeOrder}`;
+                level = `${parent.level}/${level}`;
             }
 
-            console.log(treeOrder);
-
             const category = await Category.updateOne({
-                _id : id
+                _id: id
             }, {
                 level,
                 treeOrder
             });
 
-            //console.log(category)
-
             return category;
         } catch (error) {
-            console.error(`categoryService::putCategory::${error}`);
+            console.error(`CategoryService::putCategory::${error}`);
+            return Promise.reject(error);
         }
+    }
 
+    static deleteCategory = async (id, actBy) => {
+        try {
+            return await Category.updateOne({ _id : id }, {
+                isDeleted: true,
+                deletedBy: actBy,
+                deletedAt: new Date()
+            })
+        } catch (error) {
+            console.error(`CategoryService::putCategory::${error}`);
+            return Promise.reject(error);
+        }
     }
 }
 
-module.exports = categoryService;
+module.exports = CategoryService;
