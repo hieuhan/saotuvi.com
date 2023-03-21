@@ -8,14 +8,14 @@ var app = {
             var self = $(this), urlRequest = self.data('url') || '';
 
             if (urlRequest.trim().length > 0) {
-                $.ajax({
+                app.fetchData({
                     url: urlRequest,
                     dataType: 'html',
-                    success: function (data) {
-                        const modalContent = $('#modal').find('.modal-content').first();
-                        modalContent.html(data);
-                        $('#modal').modal('show');
-                    }
+                    type: 'GET'
+                }).then((response) => {
+                    const modalContent = $('#modal').find('.modal-content').first();
+                    modalContent.html(response);
+                    $('#modal').modal('show');
                 });
             }
         });

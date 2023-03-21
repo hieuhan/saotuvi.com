@@ -3,26 +3,40 @@ module.exports = mongoose => {
         {
             name: {
                 type: String,
-                required: [true, 'Vui lòng nhập tên chuyên mục.'],
+                required: true,
                 trim: true,
                 unique: true
             },
             description: String,
             slug: { type: String, required: true, unique: true },
-            parent: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Category'
+            parent: { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: 'Category',
+                require: false
             },
-            children: [{
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Category'
-            }],
+            parentSlug: String,
+            level: String,
+            treeOrder: String,
             image: String,
             controllerAction: String,
-            // metadata:{
-
-            // },
+            metaData:{
+                metaTitle: String,
+                metaDescription: String,
+                metaKeywords: String,
+                h1Tag: String,
+                canonical: String,
+                isIndex: { type: Boolean, default: true }
+            },
+            displayOrder: Number,
+            createdBy: { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: 'User' 
+            },
             createdAt: { type: Date, default: Date.now },
+            updatedBy: { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: 'User' 
+            },
             updatedAt: { type: Date }
         },
         {
@@ -30,7 +44,7 @@ module.exports = mongoose => {
             timestamps: false
         });
 
-    categorySchema.index({ name: 'text' });
+    categorySchema.index({ name: 'text', slug: 'text', treeOrder: 'text' });
 
     return mongoose.model('Category', categorySchema);
 }

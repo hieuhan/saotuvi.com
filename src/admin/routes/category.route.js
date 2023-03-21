@@ -4,6 +4,6 @@ const categoryCreateValidator = require('../validators/category/create');
 
 router.get('/', categoryController.index);
 router.get('/create', categoryController.create).put('/create', categoryCreateValidator, categoryController.createPost);
-router.patch('/edit/:id', categoryController.edit).put('/edit/:id', categoryController.editPost);
+router.get('/edit/:id', categoryController.edit).patch('/edit/:id', categoryController.editPost);
 
 module.exports = router;

@@ -6,20 +6,20 @@
         aria-label="Close"></button>
 </div>
 <div class="modal-body py-4 px-5">
-    <form action="/stv/user/create" method="post" data-ajax="true">
+    <form action="/stv/user/create" method="post" data-ajax="true" autocomplete="off">
         <div class="mb-2">
             <label class="form-label" for="modal-auth-email">Email</label>
-            <input class="form-control" name="email" value="<%= dataInput.email && dataInput.email %>" type="text" autocomplete="off" />
+            <input class="form-control" name="email" type="text" autocomplete="new-password" />
             <label for="email" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-2">
             <label class="form-label" for="modal-auth-email">Mật khẩu</label>
-            <input class="form-control" name="password" value="<%= dataInput.password && dataInput.password %>" type="password" autocomplete="off" />
+            <input class="form-control" name="password" type="password" autocomplete="new-password" />
             <label for="password" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-2">
             <label class="form-label" for="modal-auth-email">Mật khẩu xác nhận</label>
-            <input class="form-control" name="confirmpassword" value="<%= dataInput.confirmpassword && dataInput.confirmpassword %>" type="password" autocomplete="off" />
+            <input class="form-control" name="confirmpassword" type="password" autocomplete="new-password" />
             <label for="confirmpassword" class="form-check-label mb-0 text-danger"></label>
         </div>
         <div class="mb-3"><button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Lưu thông tin</button></div>
