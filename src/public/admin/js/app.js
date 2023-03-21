@@ -36,6 +36,37 @@ var app = {
                     }).then((response) => {
                         const modalContent = $('#media-modal').find('.modal-body').first();
                         modalContent.html(response);
+                        if ($('.dropzone').length > 0) {
+                            //Dropzone.autoDiscover = false;
+                            $('.dropzone').dropzone({
+                                paramName: 'files',
+                                url: '/stv/media/upload',
+                                maxFiles: 10,
+                                maxFilesize: 20, // MB
+                                acceptedFiles: 'image/*',    
+                                addRemoveLinks: false,
+                                init: function () {
+                                    var dropzone = this;
+
+                                    this.on("success", function (files, response) {
+                                        //app.bindTableData('/admin/file/binddata', 'file-table-result');
+                                        //$('.nav-tabs a[href="#tabs-home-14"]').tab('show');
+                                        dropzone.removeAllFiles();
+                                        // Gets triggered when the files have successfully been sent.
+                                        // Redirect user or notify of success.
+                                    });
+                                }
+                                // success: function (file, response) {
+                                //     var imgName = response;
+                                //     //file.previewElement.classList.add("dz-success");
+                                //     //console.log("Successfully uploaded :" + imgName);
+                                // },
+                                // error: function (file, response) {
+                                    
+                                //     //file.previewElement.classList.add("dz-error");
+                                // }
+                            });
+                        }
                         $('#media-modal').modal('show');
                     });
                 }
@@ -78,8 +109,7 @@ var app = {
         $(document).on('click', '.btn-submit', function (e) {
             e.preventDefault();
             var self = $(this), parent = self.closest('.modal-content'), form = parent.find('form').first();
-            if(form.length > 0)
-            {
+            if (form.length > 0) {
                 form.submit();
             }
         });
