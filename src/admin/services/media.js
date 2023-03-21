@@ -26,6 +26,34 @@ class MediaService {
             return Promise.reject(error);
         }
     }
+
+    static putMedia = async (media) => {
+        try {
+            return await Media.create(media);
+        } catch (error) {
+            console.error(`MediaService::putMedia::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static patchMedia = async (media) => {
+        try {
+            return await Media.updateOne({
+                _id: media.id
+            }, {
+                name: media.name,
+                path: media.page,
+                content: media.content,
+                size: media.size,
+                contentType: media.size,
+                updatedBy: media.updatedBy,
+                updatedAt: new Date()
+            });
+        } catch (error) {
+            console.error(`MediaService::patchMedia::${error}`);
+            return Promise.reject(error);
+        }
+    }
 }
 
 module.exports = MediaService;

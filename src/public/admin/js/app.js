@@ -14,7 +14,7 @@ var app = {
                         dataType: 'html',
                         type: 'GET'
                     }).then((response) => {
-                        const modalContent = $('#modal').find('.modal-content').first();
+                        const modalContent = $('#modal').find('.modal-body').first();
                         modalContent.html(response);
                         $('#modal').modal('show');
                     });
@@ -23,7 +23,7 @@ var app = {
                 console.error(error);
             }
         });
-        $(document).on('click', '.select-image', function (e) {
+        $(document).on('click', '.select-media', function (e) {
             e.preventDefault();
             try {
                 var self = $(this), urlRequest = self.data('url') || '';
@@ -34,9 +34,9 @@ var app = {
                         dataType: 'html',
                         type: 'GET'
                     }).then((response) => {
-                        const modalContent = $('#image-modal').find('.modal-content').first();
+                        const modalContent = $('#media-modal').find('.modal-body').first();
                         modalContent.html(response);
-                        $('#image-modal').modal('show');
+                        $('#media-modal').modal('show');
                     });
                 }
             } catch (error) {
@@ -67,6 +67,21 @@ var app = {
             });
 
             event.preventDefault();
+        });
+        $(document).on('change keyup paste', '.to-slug', function (e) {
+            try {
+                $('.get-slug').val(app.toSlug($(this).val()))
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        $(document).on('click', '.btn-submit', function (e) {
+            e.preventDefault();
+            var self = $(this), parent = self.closest('.modal-content'), form = parent.find('form').first();
+            if(form.length > 0)
+            {
+                form.submit();
+            }
         });
     },
     fetchData: function (options) {
@@ -129,6 +144,33 @@ var app = {
             window.history.pushState(null, '', url);
         }
     },
+    toSlug: function (str) {
+        // Chuyển hết sang chữ thường
+        str = str.toLowerCase();
+
+        // xóa dấu
+        str = str
+            .normalize('NFD') // chuyển chuỗi sang unicode tổ hợp
+            .replace(/[\u0300-\u036f]/g, ''); // xóa các ký tự dấu sau khi tách tổ hợp
+
+        // Thay ký tự đĐ
+        str = str.replace(/[đĐ]/g, 'd');
+
+        // Xóa ký tự đặc biệt
+        str = str.replace(/([^0-9a-z-\s])/g, '');
+
+        // Xóa khoảng trắng thay bằng ký tự -
+        str = str.replace(/(\s+)/g, '-');
+
+        // Xóa ký tự - liên tiếp
+        str = str.replace(/-+/g, '-');
+
+        // xóa phần dư - ở đầu & cuối
+        str = str.replace(/^-+|-+$/g, '');
+
+        // return
+        return str;
+    }
 }
 
 $(function () {
