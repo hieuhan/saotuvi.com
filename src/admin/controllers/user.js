@@ -48,7 +48,7 @@ module.exports.createPost = async (request, response, next) => {
             password
         });
 
-        console.log(userCreate)
+        //console.log(userCreate)
 
         return response.json({ success: true, message: 'Tạo tài khoản thành công' });
         //response.render('admin/user/create', { dataInput: {}, error: {}, message: '', layout: './admin/layouts/modal' });
