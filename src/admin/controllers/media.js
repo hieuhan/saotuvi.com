@@ -28,7 +28,7 @@ module.exports.indexPost = async (request, response, next) => {
 
 module.exports.upload = async (request, response, next) => {
     try {
-        console.log(request.files)
+        //console.log(request.files)
         // if (!request.body && !request.files) {
         //     response.json({ success: false, message: 'Vui lòng thử lại sau.' });
         // } else {
@@ -44,7 +44,7 @@ module.exports.upload = async (request, response, next) => {
         //     })
 
         // }
-        return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: Buffer.from('username:password', 'utf8').toString('base64') });
+        //return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: Buffer.from('username:password', 'utf8').toString('base64') });
     } catch (error) {
         next(error);
     }

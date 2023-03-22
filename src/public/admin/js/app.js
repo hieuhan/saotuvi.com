@@ -49,9 +49,10 @@ var app = {
                                     var dropzone = this;
 
                                     this.on("success", function (files, response) {
+                                        console.log(files)
                                         //app.bindTableData('/admin/file/binddata', 'file-table-result');
                                         //$('.nav-tabs a[href="#tabs-home-14"]').tab('show');
-                                        dropzone.removeAllFiles();
+                                        //dropzone.removeAllFiles();
                                         // Gets triggered when the files have successfully been sent.
                                         // Redirect user or notify of success.
                                     });
