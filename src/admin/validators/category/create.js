@@ -2,6 +2,8 @@ const { body } = require('express-validator');
 const { Category } = require('../../models');
 
 module.exports = [
+    body('id')
+        .not().isEmpty().withMessage('Vui lòng chọn chuyên mục'),
     body('name')
         .not().isEmpty().withMessage('Vui lòng nhập tên chuyên mục')
         .isLength({ max: 255 }).withMessage('Tên chuyên mục khuyến nghị không vượt quá 255 ký tự')

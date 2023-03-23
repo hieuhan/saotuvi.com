@@ -1,6 +1,15 @@
 const { Category } = require('../models')
 
 class CategoryService {
+    static getById = async (id) => {
+        try {
+            return await Category.findOne({ _id: id });
+        } catch (error) {
+            console.error(`CategoryService::getById::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
     static getList = async ({
         id = '',
         limit = 50,
@@ -17,6 +26,7 @@ class CategoryService {
                 name: 1,
                 description: 1,
                 slug: 1,
+                image: 1,
                 parent: 1,
                 parentSlug: 1,
                 level: 1,
@@ -75,6 +85,15 @@ class CategoryService {
             return category;
         } catch (error) {
             console.error(`CategoryService::putCategory::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static patchCategory = async (category) => {
+        try {
+            return await Category.updateOne({ _id: category.id }, category);
+        } catch (error) {
+            console.error(`:::CategoryService.patchCategory:::${error}`);
             return Promise.reject(error);
         }
     }

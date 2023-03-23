@@ -3,12 +3,18 @@ const { Media } = require('../models');
 class MediaService {
     static getList = async ({
         keywords = '',
-        page = 1,
+        page = 0,
         limit = 50,
         skip = 0
     }) => {
         try {
-            const medias = await Media.find({}, {
+            let match = {};
+
+            if (keywords.trim().length > 0) {
+                match = { $text: { $search: keywords } };
+            }
+
+            const medias = await Media.find(match, {
                 name: 1,
                 path: 1,
                 content: 1,
@@ -18,7 +24,9 @@ class MediaService {
             })
                 .sort({
                     createdAt: 'desc'
-                });
+                })
+                .skip(page * (limit - 1))
+                .limit(limit);
 
             return medias;
         } catch (error) {

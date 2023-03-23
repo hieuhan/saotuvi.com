@@ -5,26 +5,23 @@
         <h5 class="mb-0">Danh sách chuyên mục</h5>
       </div>
       <div class="col-auto ms-auto">
-        <div class="nav nav-pills nav-pills-falcon flex-grow-1" role="tablist"><button class="btn btn-sm active"
-            data-bs-toggle="pill" data-bs-target="#dom-5155dc45-719a-4b89-a8f2-5986e6d209e5" type="button" role="tab"
-            aria-controls="dom-5155dc45-719a-4b89-a8f2-5986e6d209e5" aria-selected="true"
-            id="tab-dom-5155dc45-719a-4b89-a8f2-5986e6d209e5">Preview</button><button class="btn btn-sm"
-            data-bs-toggle="pill" data-bs-target="#dom-32aca30a-234d-47b3-aa22-15875d0b3d2d" type="button" role="tab"
-            aria-controls="dom-32aca30a-234d-47b3-aa22-15875d0b3d2d" aria-selected="false"
-            id="tab-dom-32aca30a-234d-47b3-aa22-15875d0b3d2d">Code</button></div>
+
       </div>
     </div>
   </div>
   <div class="card-body py-0 border-top">
     <div class="tab-content">
-      <div class="tab-pane preview-tab-pane active" role="tabpanel"
-        aria-labelledby="tab-dom-5155dc45-719a-4b89-a8f2-5986e6d209e5" id="dom-5155dc45-719a-4b89-a8f2-5986e6d209e5">
+      <div class="tab-pane preview-tab-pane active" role="tabpanel">
         <div class="card shadow-none">
           <div class="card-body p-0 pb-3">
             <div class="d-flex align-items-center justify-content-end my-3">
-              <div id="bulk-select-replace-element"><button id="popup" data-url="/stv/category/create"
-                  data-method="PATCH" class="btn btn-falcon-success btn-sm" type="button"><span class="fas fa-plus"
-                    data-fa-transform="shrink-3 down-2"></span><span class="ms-1">Tạo mới</span></button></div>
+              <div id="bulk-select-replace-element">
+                <button data-url="/stv/category/create" data-method="PATCH" class="btn btn-falcon-success btn-sm popup"
+                  type="button">
+                  <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                  <span class="ms-1">Tạo mới</span>
+                </button>
+              </div>
               <div class="d-none ms-3" id="bulk-select-actions">
                 <div class="d-flex">
                   <select class="form-select form-select-sm" aria-label="Bulk actions">
@@ -34,142 +31,108 @@
                 </div>
               </div>
             </div>
-            <div class="table-responsive scrollbar">
-              <table class="table mb-0">
-                <thead class="text-black bg-200">
-                  <tr>
-                    <th class="align-middle white-space-nowrap">
-                      <div class="form-check mb-0"><input class="form-check-input" type="checkbox"
-                          data-bulk-select='{"body":"bulk-select-body","actions":"bulk-select-actions","replacedElement":"bulk-select-replace-element"}' />
-                      </div>
-                    </th>
-                    <th class="align-middle">Tên</th>
-                    <th class="align-middle">Mô tả </th>
-                    <th class="align-middle">Url</th>
-                    <th class="align-middle">Chuyên mục cha</th>
-                    <th class="align-middle white-space-nowrap pe-3">Ngày tạo</th>
-                  </tr>
-                </thead>
-                <tbody id="bulk-select-body">
-                  <%if(typeof (list) !='undefined' && list) { for(var i=0; i<list.length; i++){ %>
-                    <tr>
-                      <td class="align-middle white-space-nowrap">
-                        <div class="form-check mb-0"><input class="form-check-input" type="checkbox" id="checkbox-1"
-                            data-bulk-select-row="data-bulk-select-row" /></div>
-                      </td>
-                      <th class="align-middle">
-                        <%= list[i].name %>
-                      </th>
-                      <td class="align-middle">
-                        <%= list[i].description %>
-                      </td>
-                      <td class="align-middle">
-                        <a href="<%= stringHeplers.getSlug(list[i].slug) %>" title="<%= list[i].name %>"
-                          target="_blank">
-                          <%= stringHeplers.getSlug(list[i].slug) %>
-                        </a>
-                      </td>
-                      <td class="align-middle">
-                        <%= list[i].parent !=null ? list[i].parent.name : '' %>
-                      </td>
-                      <td class="align-middle white-space-nowrap text-end pe-3">
-                        <%= list[i].createdAt.toLocaleString('en-GB', { hour12: false, }) %>
-                      </td>
-                    </tr>
-                    <%} }%>
-                </tbody>
-              </table>
+            <div id="table-result">
+              <div class="card-body p-0">
+                <div class="table-responsive scrollbar">
+                  <table class="table mb-0">
+                    <thead class="text-black bg-200">
+                      <tr>
+                        <th class="align-middle white-space-nowrap">
+                          <div class="form-check mb-0"><input class="form-check-input" type="checkbox"
+                              data-bulk-select='{"body":"bulk-select-body","actions":"bulk-select-actions","replacedElement":"bulk-select-replace-element"}' />
+                          </div>
+                        </th>
+                        <th class="align-middle">Tên</th>
+                        <th class="align-middle">Mô tả </th>
+                        <th class="align-middle">Hình ảnh</th>
+                        <th class="align-middle">Url</th>
+                        <th class="align-middle">Chuyên mục cha</th>
+                        <th class="align-middle white-space-nowrap pe-3">Ngày tạo</th>
+                        <th class="text-end" scope="col">Hành động</th>
+                      </tr>
+                    </thead>
+                    <tbody id="bulk-select-body">
+                      <%if(typeof (data) !='undefined' && data) { for(var i=0; i<data.length; i++){ %>
+                        <tr>
+                          <td class="align-middle white-space-nowrap">
+                            <div class="form-check mb-0"><input class="form-check-input" type="checkbox" id="checkbox-1"
+                                data-bulk-select-row="data-bulk-select-row" /></div>
+                          </td>
+                          <th class="align-middle">
+                            <%= data[i].name %>
+                          </th>
+                          <td class="align-middle">
+                            <%= data[i].description %>
+                          </td>
+                          <td class="align-middle">
+                            <%if(typeof (data[i].image) !='undefined' && data[i].image.trim().length> 0){%>
+                              <div class="file-thumbnail">
+                                <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
+                                  src="<%= stringHeplers.getSlug(data[i].image) %>" alt="" />
+                              </div>
+                              <%} %>
+                          </td>
+                          <td class="align-middle">
+                            <a href="<%= stringHeplers.getSlug(data[i].slug) %>" title="<%= data[i].name %>"
+                              target="_blank">
+                              <%= stringHeplers.getSlug(data[i].slug) %>
+                            </a>
+                          </td>
+                          <td class="align-middle">
+                            <%= data[i].parent !=null ? data[i].parent.name : '' %>
+                          </td>
+                          <td class="align-middle white-space-nowrap text-end pe-3">
+                            <%= data[i].createdAt.toLocaleString('en-GB', { hour12: false, }) %>
+                          </td>
+                          <td class="text-end">
+                            <div>
+                              <button data-url="/stv/category/edit/<%= data[i]._id %>" data-method="PUT"
+                                class="btn btn-link p-0 popup" type="button" data-bs-toggle="tooltip"
+                                data-bs-placement="top" aria-label="Edit" data-bs-original-title="Sửa">
+                                <svg class="svg-inline--fa fa-edit fa-w-18 text-500" aria-hidden="true"
+                                  focusable="false" data-prefix="fas" data-icon="edit" role="img"
+                                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
+                                  <path fill="currentColor"
+                                    d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z">
+                                  </path>
+                                </svg>
+                              </button>
+                              <button class="btn btn-link p-0 ms-2" type="button" data-bs-toggle="tooltip"
+                                data-bs-placement="top" aria-label="Delete" data-bs-original-title="Xóa">
+                                <svg class="svg-inline--fa fa-trash-alt fa-w-14 text-500" aria-hidden="true"
+                                  focusable="false" data-prefix="fas" data-icon="trash-alt" role="img"
+                                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
+                                  <path fill="currentColor"
+                                    d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z">
+                                  </path>
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        <%} }%>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="card-footer">
+                <div class="d-flex justify-content-center">
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                      <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span
+                            aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>
+                      <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                      <li class="page-item"><a class="page-link" href="#">2</a></li>
+                      <li class="page-item"><a class="page-link" href="#">3</a></li>
+                      <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span
+                            aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="tab-pane code-tab-pane" role="tabpanel" aria-labelledby="tab-dom-32aca30a-234d-47b3-aa22-15875d0b3d2d"
-        id="dom-32aca30a-234d-47b3-aa22-15875d0b3d2d">
-        <pre class="scrollbar rounded-1" style="max-height:420px"><code class="language-html">&lt;div class=&quot;card shadow-none&quot;&gt;
-  &lt;div class=&quot;card-body p-0 pb-3&quot;&gt;
-  &lt;div class=&quot;d-flex align-items-center justify-content-end my-3&quot;&gt;
-  &lt;div id=&quot;bulk-select-replace-element&quot;&gt;&lt;button class=&quot;btn btn-falcon-success btn-sm&quot; type=&quot;button&quot;&gt;&lt;span class=&quot;fas fa-plus&quot; data-fa-transform=&quot;shrink-3 down-2&quot;&gt;&lt;/span&gt;&lt;span class=&quot;ms-1&quot;&gt;New&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;
-  &lt;div class=&quot;d-none ms-3&quot; id=&quot;bulk-select-actions&quot;&gt;
-  &lt;div class=&quot;d-flex&quot;&gt;&lt;select class=&quot;form-select form-select-sm&quot; aria-label=&quot;Bulk actions&quot;&gt;
-      &lt;option selected=&quot;selected&quot;&gt;Bulk actions&lt;/option&gt;
-      &lt;option value=&quot;Delete&quot;&gt;Delete&lt;/option&gt;
-      &lt;option value=&quot;Archive&quot;&gt;Archive&lt;/option&gt;
-    &lt;/select&gt;&lt;button class=&quot;btn btn-falcon-danger btn-sm ms-2&quot; type=&quot;button&quot;&gt;Apply&lt;/button&gt;&lt;/div&gt;
-  &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;table-responsive scrollbar&quot;&gt;
-  &lt;table class=&quot;table mb-0&quot;&gt;
-  &lt;thead class=&quot;text-black bg-200&quot;&gt;
-    &lt;tr&gt;
-      &lt;th class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; data-bulk-select='{&quot;body&quot;:&quot;bulk-select-body&quot;,&quot;actions&quot;:&quot;bulk-select-actions&quot;,&quot;replacedElement&quot;:&quot;bulk-select-replace-element&quot;}' /&gt;&lt;/div&gt;
-      &lt;/th&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Name&lt;/th&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Nationality &lt;/th&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Gender&lt;/th&gt;
-      &lt;th class=&quot;align-middle white-space-nowrap pe-3&quot;&gt;Age&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody id=&quot;bulk-select-body&quot;&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-1&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Kit Harington&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;British&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Male&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;32&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-2&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Emilia Clarke&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;British&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Female&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;32&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-3&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Peter Dinklage&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;American&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Male&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;49&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-4&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Sean Bean&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;British&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Male&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;59&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-5&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Maisie Williams&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;British&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Female&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;21&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap&quot;&gt;
-        &lt;div class=&quot;form-check mb-0&quot;&gt;&lt;input class=&quot;form-check-input&quot; type=&quot;checkbox&quot; id=&quot;checkbox-6&quot; data-bulk-select-row=&quot;data-bulk-select-row&quot; /&gt;&lt;/div&gt;
-      &lt;/td&gt;
-      &lt;th class=&quot;align-middle&quot;&gt;Sophie Turner&lt;/th&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;British&lt;/td&gt;
-      &lt;td class=&quot;align-middle&quot;&gt;Female&lt;/td&gt;
-      &lt;td class=&quot;align-middle white-space-nowrap text-end pe-3&quot;&gt;23&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-  &lt;/table&gt;
-  &lt;/div&gt;
-  &lt;/div&gt;
-  &lt;/div&gt;</code></pre>
       </div>
     </div>
   </div>

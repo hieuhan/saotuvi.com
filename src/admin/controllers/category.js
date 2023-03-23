@@ -6,50 +6,27 @@ module.exports.index = async (request, response, next) => {
     try {
         //await Category.deleteMany();
 
-        // const category = await categoryService.putCategory({
-        //     name: 'Tử vi',
-        //     description: 'Tử vi',
-        //     slug: 'tu-vi',
-        //     parent: null
-        // });
-
-        // const category = await categoryService.putCategory({
-        //     name: 'Tử vi 12 con giáp',
-        //     description: 'Tử vi 12 con giáp',
-        //     slug: 'tu-vi-12-con-giap',
-        //     parent: '641958e1ee7c67e326c930a6',
-        //     displayOrder: 2
-        // });
-
-        // const category = await categoryService.putCategory({
-        //     name: 'dev',
-        //     description: 'dev',
-        //     slug: 'dev',
-        //     parent: '6419593de78efa7e8cb44a4a',
-        //     displayOrder: 0
-        // });
-        
-        // const category = await Category.create({
-        //     name: 'demo 5',
-        //     description: 'demo 5',
-        //     slug: 'demo-5',
-        //     displayOrder: 5,
-        //     parent: '6418a050ea376488b210486f'
-        // });
-
-        // const treeOrder = await categoryService.patchTreeOrder({
-        //     id: category._id,
-        //     level: category.level,
-        //     parent: category.parent,
-        //     createdAt: category.createdAt
-        // });
-
-        const list = await CategoryService.getList({
+        const data = await CategoryService.getList({
             id: ''
         });
 
-        console.log(list)
-        response.render('admin/category', { list: list, layout: './admin/layouts/default' });
+        response.render('admin/category', { data: data, layout: './admin/layouts/default' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.binddata = async (request, response, next) => {
+    try {
+        let { keywords, page, limit } = request.body;
+
+        page = page || 0; limit = limit || 50;
+
+        var data = await CategoryService.getList({
+            keywords, page, limit
+        });
+
+        response.render('admin/category/binddata', { data: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -68,13 +45,14 @@ module.exports.create = async (request, response, next) => {
 
 module.exports.createPost = async (request, response, next) => {
     try {
-        const category = { name, description, slug, parent, 
+        const category = {
+            name, description, slug, parent,
             displayOrder, image, controllerAction,
             metaTitle, metaDescription, metaKeywords,
             h1Tag, canonical, isIndex
-         } = request.body;
-         
-         const errors = validationResult(request);
+        } = request.body;
+
+        const errors = validationResult(request);
 
         if (!errors.isEmpty()) {
             return response.json({ success: false, error: errors.mapped() });
@@ -82,7 +60,7 @@ module.exports.createPost = async (request, response, next) => {
 
         await CategoryService.putCategory(category);
 
-        return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: Buffer.from('username:password', 'utf8').toString('base64')  });
+        return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: '/stv/category/binddata' });
 
     } catch (error) {
         next(error);
@@ -92,15 +70,23 @@ module.exports.createPost = async (request, response, next) => {
 module.exports.edit = async (request, response, next) => {
     try {
         const { id } = request.params;
+        if (!id) {
+            return next(new Error('Không tìm thấy chuyên mục phù hợp.'));
+        }
 
-        //if(id)
-        //{
-            //const categoryById = await Category.findOne({ id });
+        const category = await CategoryService.getById(id);
+        const data = await CategoryService.getList({
+            id: ''
+        });
 
-            //console.log(categoryById)
-        //}
+        // const [category, data] = await Promise.all[
+        //     CategoryService.getById(id),
+        //     CategoryService.getList({
+        //         id: ''
+        //     })
+        // ];
 
-        response.render('admin/category/edit', { layout: './admin/layouts/modal' });
+        response.render('admin/category/edit', { category: category, data: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -108,7 +94,27 @@ module.exports.edit = async (request, response, next) => {
 
 module.exports.editPost = async (request, response, next) => {
     try {
-        response.render('admin/category/edit', { layout: './admin/layouts/modal' });
+        const category = {
+            id, name, description, slug, parent,
+            displayOrder, image, controllerAction,
+            metaTitle, metaDescription, metaKeywords,
+            h1Tag, canonical, isIndex
+        } = request.body;
+
+        const errors = validationResult(request);
+
+        if (!errors.isEmpty()) {
+            return response.json({ success: false, error: errors.mapped() });
+        }
+
+        const categoryFind = await CategoryService.getById(id);
+
+        if(categoryFind){
+            await CategoryService.patchCategory(category);
+            return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: '/stv/category/binddata' });
+        }
+
+        return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
     } catch (error) {
         next(error);
     }

@@ -9,8 +9,8 @@ module.exports = mongoose => {
             },
             description: String,
             slug: { type: String, required: true, unique: true },
-            parent: { 
-                type: mongoose.Schema.Types.ObjectId, 
+            parent: {
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Category',
                 require: false
             },

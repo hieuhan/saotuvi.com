@@ -3,7 +3,7 @@ var app = {
         this.events();
     },
     events: function () {
-        $(document).on('click', '#popup', function (e) {
+        $(document).on('click', '.popup', function (e) {
             e.preventDefault();
             try {
                 var self = $(this), urlRequest = self.data('url') || '';
@@ -26,7 +26,8 @@ var app = {
         $(document).on('click', '.select-media', function (e) {
             e.preventDefault();
             try {
-                var self = $(this), urlRequest = self.data('url') || '';
+                var self = $(this), urlRequest = self.data('url') || '',
+                    popup = $('#media-modal');
 
                 if (urlRequest.trim().length > 0) {
                     app.fetchData({
@@ -34,41 +35,11 @@ var app = {
                         dataType: 'html',
                         type: 'GET'
                     }).then((response) => {
-                        const modalContent = $('#media-modal').find('.modal-body').first();
-                        modalContent.html(response);
-                        if ($('.dropzone').length > 0) {
-                            //Dropzone.autoDiscover = false;
-                            $('.dropzone').dropzone({
-                                paramName: 'files',
-                                url: '/stv/media/upload',
-                                maxFiles: 10,
-                                maxFilesize: 20, // MB
-                                acceptedFiles: 'image/*',    
-                                addRemoveLinks: false,
-                                init: function () {
-                                    var dropzone = this;
-
-                                    this.on("success", function (files, response) {
-                                        console.log(files)
-                                        //app.bindTableData('/admin/file/binddata', 'file-table-result');
-                                        //$('.nav-tabs a[href="#tabs-home-14"]').tab('show');
-                                        //dropzone.removeAllFiles();
-                                        // Gets triggered when the files have successfully been sent.
-                                        // Redirect user or notify of success.
-                                    });
-                                }
-                                // success: function (file, response) {
-                                //     var imgName = response;
-                                //     //file.previewElement.classList.add("dz-success");
-                                //     //console.log("Successfully uploaded :" + imgName);
-                                // },
-                                // error: function (file, response) {
-                                    
-                                //     //file.previewElement.classList.add("dz-error");
-                                // }
-                            });
+                        const modalContent = popup.find('.modal-body').first();
+                        if (modalContent.length > 0) {
+                            modalContent.html(response);
+                            popup.modal('show');
                         }
-                        $('#media-modal').modal('show');
                     });
                 }
             } catch (error) {
@@ -86,7 +57,6 @@ var app = {
                     form.find('label.form-check-label').text('');
                 }
             }).done(function (response) {
-                console.log(response)
                 if (!response.success) {
                     if (response.error) {
                         $.each(response.error, function (index, item) {
@@ -94,11 +64,118 @@ var app = {
                         });
                     }
                 } else {
-
+                    if(response.cb){
+                        $('#modal').modal('toggle');
+                        app.bindTableData(response.cb)
+                    }
                 }
             });
 
             event.preventDefault();
+        });
+        $(document).on('submit', 'form.search[data-ajax="true"]', function (event) {
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'html',
+                beforeSend: function () {
+                    form.find('label.form-check-label').text('');
+                }
+            }).done(function (response) {
+                if (response.length > 0) {
+                    $('#table-result').html(response);
+                }
+            });
+
+            event.preventDefault();
+        });
+        $(document).on('change', 'input[name="files"]', function (e) {
+            try {
+                const self = $(this), form = self.closest('form').first();
+                if (form.length > 0) {
+                    formData = new FormData($(form)[0]);
+
+                    var files = self[0].files;
+
+                    for (var i = 0; i < files.length; i++) {
+                        var filename = files[i].name,
+                        fileSize = files[i].size;
+
+                        var size = Math.round((fileSize / 1024));
+
+                        if (size > 20*1024){
+                            alert('File ảnh hợp lệ có dung lượng không vượt quá 20MB.');
+                            return;
+                        }
+                        var extension = filename.substr(filename.lastIndexOf('.'));
+
+                        var allowedExtensionsRegx = /(\.jpg|\.jpeg|\.png|\.gif|\.svg)$/i;
+
+                        var isAllowed = allowedExtensionsRegx.test(extension);
+
+                        if (!isAllowed) {
+                            alert('Vui lòng chọn file ảnh (.jpg, .jpeg, .png, .gif, .svg)');
+                            return;
+                        } 
+                    }
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: form.attr('method'),
+                        data: formData,
+                        xhr: function () {
+                            var fileXhr = $.ajaxSettings.xhr();
+                            if (fileXhr.upload) {
+                                $('.progress').show();
+                                fileXhr.upload.addEventListener("progress", function (e) {
+                                    if (e.lengthComputable) {
+                                        var percentage = Math.ceil(((e.loaded / e.total) * 100));
+                                        $('.progress-bar').text(percentage + '%');
+                                        $('.progress-bar').width(percentage + '%');
+                                        if (percentage == 100) {
+                                            $('.progress-bar').text('100%');
+                                        }
+                                    }
+                                }, false);
+                            }
+                            return fileXhr;
+                        },
+                        success: function (response) {
+
+                            if(response.cb){
+                                app.bindTableData(response.cb)
+                            }
+                            
+                            setTimeout(function () {
+                                $('.progress').hide();
+                            }, 1000);
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                    return false;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        $(document).on('click', '.choose-image', function (e) {
+            try {
+                var self = $(this), name = self.data('name') || '', path = self.data('path') || '',
+                inputImageCover = $('#modal').find('.image-cover').first()
+                inputPath = $('#modal').find('input[name="image"]').first();
+                
+                if(inputPath.length > 0 && path.trim().length > 0){
+                    inputPath.val(path);
+                    inputImageCover.attr('src', path.startsWith('/') ? path : `/${ path }`);
+                    $('#media-modal').modal('toggle');
+                }
+            } catch (error) {
+                console.error(error);
+            }
         });
         $(document).on('change keyup paste', '.to-slug', function (e) {
             try {

@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const mediaController = require('../controllers/media');
-const { uploadImages, resizeImages, getResult} = require('../middlewares/upload');
-//const upload = require('../utils/multer');
+const { uploadImages, resizeImages } = require('../middlewares/upload');
+
 router.get('/', mediaController.index);
-router.post('/upload', uploadImages, resizeImages, getResult, mediaController.upload);
+router.post('/binddata', mediaController.binddata);
+router.post('/upload', uploadImages, resizeImages, mediaController.upload);
 
 module.exports = router;

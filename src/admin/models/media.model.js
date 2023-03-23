@@ -4,8 +4,7 @@ module.exports = mongoose => {
             type: String,
             required: true,
             trim: true,
-            lowercase: true,
-            unique: true
+            lowercase: true
         },
         path: {
             type: String,

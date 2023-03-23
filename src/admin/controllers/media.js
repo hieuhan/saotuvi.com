@@ -1,12 +1,16 @@
-const { model } = require('mongoose');
-const sharp = require('sharp');
 const MediaService = require('../services/media');
+//const { Media }  = require('../models');
 
 module.exports.index = async (request, response, next) => {
     try {
-        const { keywords, page, limit } = request.params;
+        //await Media.deleteMany();
+        let { keywords, page, limit } = request.params;
 
-        var data = await MediaService.getList({});
+        page = page || 0; limit = limit || 50;
+
+        var data = await MediaService.getList({
+            keywords, page, limit
+        });
 
         response.render('admin/media', { data: data, layout: './admin/layouts/modal' });
     } catch (error) {
@@ -14,13 +18,17 @@ module.exports.index = async (request, response, next) => {
     }
 }
 
-module.exports.indexPost = async (request, response, next) => {
+module.exports.binddata = async (request, response, next) => {
     try {
-        const { keywords, page, limit } = request.params;
+        let { keywords, page, limit } = request.body;
 
-        var data = await MediaService.getList({});
+        page = page || 0; limit = limit || 50;
+        console.log(keywords)
+        var data = await MediaService.getList({
+            keywords, page, limit
+        });
 
-        response.render('admin/media', { data: data, layout: './admin/layouts/modal' });
+        response.render('admin/media/binddata', { data: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -28,23 +36,31 @@ module.exports.indexPost = async (request, response, next) => {
 
 module.exports.upload = async (request, response, next) => {
     try {
-        //console.log(request.files)
-        // if (!request.body && !request.files) {
-        //     response.json({ success: false, message: 'Vui lòng thử lại sau.' });
-        // } else {
-        //     console.log(request.files)
-        //     /* res.json({ success: true, files: req.files }); */
-        //     /* req.files các file upload return về một array, qua đó chúng ta có thể dễ dàng xử lý  */
-        //     /* chú ý: nhớ rename file lại không nữa sinh ra lỗi. ở đay mình rename theo kích thuước mình resize. */
-        //     sharp(request.files[0].path).resize(262, 317).toFile('./src/public/uploads/' + '262x317-' + request.files[0].filename, function (error) {
-        //         if (error) {
-        //             console.error('sharp>>>', error)
-        //         }
-        //         console.log('ok okoko')
-        //     })
+        if (!request.body && !request.files || request.files.length <= 0) {
+            return response.json({ success: false, message: 'Vui lòng chọn file ảnh.' });
+        }
+        
+        const promises = [];
 
-        // }
-        //return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: Buffer.from('username:password', 'utf8').toString('base64') });
+        for (var index = 0; index < request.files.length; index++) {
+            promises.push(MediaService.putMedia({
+                name: request.files[index].originalname.substr(0, request.files[index].originalname.lastIndexOf('.')) || request.files[index].originalname,
+                path: request.files[index].path.replace('src\\public\\', '').replaceAll('\\', '/'),
+                contentType: request.files[index].mimetype,
+                size: request.files[index].size
+            }));
+        }
+
+        if (!promises.length) {
+            return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
+        }
+
+        await Promise.all(promises);
+
+        return response.json({
+            success: true,
+            cb: '/stv/media/binddata'
+        });
     } catch (error) {
         next(error);
     }

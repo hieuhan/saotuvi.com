@@ -1,27 +1,96 @@
-<div class="modal-header px-5 position-relative modal-shape-header bg-shape">
-    <div class="position-relative z-index-1 light">
-        <h4 class="mb-0 text-white" id="authentication-modal-label">Cập nhật chuyên mục</h4>
-        <!-- <p class="fs--1 mb-0 text-white">Please create your free Falcon account</p> -->
-    </div><button class="btn-close btn-close-white position-absolute top-0 end-0 mt-2 me-2" data-bs-dismiss="modal"
-        aria-label="Close"></button>
+<div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+    <h4 class="mb-1">Cập nhật chuyên mục <%= category.name%></h4>
 </div>
-<div class="modal-body py-4 px-5">
-    <form action="/stv/category/edit" method="post" data-ajax="true">
-        <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Email</label>
-            <input class="form-control" name="email" value="" type="text" autocomplete="off" />
-            <label for="email" class="form-check-label mb-0 text-danger"></label>
+<div class="p-4">
+    <form action="/stv/category/edit" method="patch" data-ajax="true">
+        <div class="card-body">
+            <div class="row gx-2">
+                <input class="form-control to-slug" name="id" type="hidden" value="<%= category._id%>" />
+                <div class="col-sm-6 mb-3"><label class="form-label" for="start-date">Tên chuyên mục</label>
+                    <input class="form-control to-slug" name="name" type="text" value="<%= category.name%>" placeholder="Tên chuyên mục" />
+                    <label for="name" class="form-check-label mb-0 text-danger"></label>
+                </div>
+                <div class="col-sm-6 mb-3"><label class="form-label" for="start-time">Mô tả</label>
+                    <input class="form-control" name="description" type="text" value="<%= category.description%>" placeholder="Mô tả" />
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label" for="end-date">Url</label>
+                    <input class="form-control get-slug" name="slug" type="text" value="<%= category.slug%>" placeholder="Url chuyên mục" />
+                    <label for="slug" class="form-check-label mb-0 text-danger"></label>
+                </div>
+                <div class="col-sm-6 mb-3"><label class="form-label" for="end-time">Chuyên mục cha</label>
+                    <select class="form-select" name="parent">
+                        <option value="">...</option>
+                        <%if (typeof (data) !='undefined' && data.length> 0) {
+                            for(var index = 0; index < data.length; index ++) {
+                                if(category.parent != null && data[index]._id.toString() == category.parent.toString()) {%>
+                                <option value="<%= data[index]._id %>" selected>
+                                    <%= data[index].name %>
+                                </option>
+                                <%} else { %>
+                                    <option value="<%= data[index]._id %>">
+                                        <%= data[index].name %>
+                                    </option>
+                                <%} } }%>
+                    </select>
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label">Thứ tự hiển thị</label>
+                    <input class="form-control" name="displayOrder" value="<%= category.displayOrder%>" type="number" placeholder="Thứ tự hiển thị" />
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label" for="time-zone">Hình ảnh</label>
+                    <div class="d-flex mb-3 hover-actions-trigger align-items-center">
+                        <div class="file-thumbnail">
+                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHeplers.getSlug(category.image) %>" alt="" />
+                            <input class="form-control" name="image" value="<%= category.image %>" type="hidden" />
+                        </div>
+                        <div class="ms-3 flex-shrink-1 flex-grow-1">
+                            <div class="hover-actions end-0 top-50 translate-middle-y">
+                                <!-- <a class="btn btn-light border-300 btn-sm me-1 text-600" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" href="/admin/img/icons/cloud-download.svg"
+                                    download="download" aria-label="Download" data-bs-original-title="Download">
+                                    <img src="/admin/img/icons/cloud-download.svg" alt="" width="15">
+                                </a> -->
+                                <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none select-media"
+                                    data-url="/stv/media" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    aria-label="Edit" data-bs-original-title="Edit">
+                                    <img src="/admin/img/icons/edit-alt.svg" alt="" width="15">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="border-bottom border-dashed my-3"></div>
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Controller / Action</label>
+                    <input class="form-control" name="controllerAction" type="text" value="<%= category.controllerAction%>" placeholder="Controller / Action" />
+                    <!-- <button class="btn btn-link btn-sm btn p-0" type="button">Online Event</button> -->
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Tiêu đề SEO</label>
+                    <input class="form-control" name="metaTitle" type="text" value="<%= category.metaTitle%>" placeholder="Tiêu đề SEO" />
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Mô tả SEO</label>
+                    <input class="form-control" name="metaDescription" type="text" value="<%= category.metaDescription%>" placeholder="Mô tả SEO" />
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Từ khóa SEO</label>
+                    <input class="form-control" name="metaKeywords" type="text" value="<%= category.metaKeywords%>" placeholder="Từ khóa SEO" />
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Thẻ H1</label>
+                    <input class="form-control" name="h1Tag" type="text" value="<%= category.h1Tag%>" placeholder="Thẻ H1" />
+                </div>
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label">Thẻ Canonical</label>
+                    <input class="form-control" name="canonical" type="text" value="<%= category.canonical%>" placeholder="Thẻ Canonical" />
+                </div>
+            </div>
         </div>
-        <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Mật khẩu</label>
-            <input class="form-control" name="password" value="" type="password" autocomplete="off" />
-            <label for="password" class="form-check-label mb-0 text-danger"></label>
-        </div>
-        <div class="mb-2">
-            <label class="form-label" for="modal-auth-email">Mật khẩu xác nhận</label>
-            <input class="form-control" name="confirmpassword" value="" type="password" autocomplete="off" />
-            <label for="confirmpassword" class="form-check-label mb-0 text-danger"></label>
-        </div>
-        <div class="mb-3"><button class="btn btn-primary d-block w-100 mt-3" type="submit" name="submit">Lưu thông tin</button></div>
     </form>
 </div>
