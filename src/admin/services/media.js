@@ -4,14 +4,13 @@ class MediaService {
     static getList = async ({
         keywords = '',
         page = 0,
-        limit = 50,
-        skip = 0
+        limit = 50
     }) => {
         try {
-            let match = {};
+            const match = {};
 
             if (keywords.trim().length > 0) {
-                match = { $text: { $search: keywords } };
+                match['$text'] = { $search: keywords };
             }
 
             const medias = await Media.find(match, {

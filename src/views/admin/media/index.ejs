@@ -6,7 +6,7 @@
         <div class="d-lg-flex justify-content-between">
             <div class="row flex-between-center gy-2 px-x1">
                 <div class="col-auto">
-                    <form class="search" action="/stv/media/binddata" method="post" data-ajax="true">
+                    <form class="search" action="/stv/media/binddata" method="post" data-ajax="true" data-type="search" data-destination="table-media-result">
                         <div class="input-group input-search-width">
                             <input name="keywords" class="form-control form-control-sm shadow-none search" type="search"
                                 placeholder="Tìm theo tên file, url" />
@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    <div id="table-result">
+    <div id="table-media-result">
         <%if(typeof (data) !='undefined' && data.length> 0) { %>
             <div class="card-body p-0">
                 <div class="table-responsive scrollbar">

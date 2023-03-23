@@ -41,11 +41,11 @@ module.exports.upload = async (request, response, next) => {
         }
         
         const promises = [];
-
+        console.log(request.files)
         for (var index = 0; index < request.files.length; index++) {
             promises.push(MediaService.putMedia({
                 name: request.files[index].originalname.substr(0, request.files[index].originalname.lastIndexOf('.')) || request.files[index].originalname,
-                path: request.files[index].path.replace('src\\public\\', '').replaceAll('\\', '/'),
+                path: request.files[index].path.replace('src\\public\\', '').replace('src/public/', '').replaceAll('\\', '/'),
                 contentType: request.files[index].mimetype,
                 size: request.files[index].size
             }));

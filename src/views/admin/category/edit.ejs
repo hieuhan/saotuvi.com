@@ -27,7 +27,7 @@
                                 <option value="<%= data[index]._id %>" selected>
                                     <%= data[index].name %>
                                 </option>
-                                <%} else { %>
+                                <%} else if (data[index]._id.toString() != category._id.toString()) { %>
                                     <option value="<%= data[index]._id %>">
                                         <%= data[index].name %>
                                     </option>

@@ -46,7 +46,7 @@ var app = {
                 console.error(error);
             }
         });
-        $(document).on('submit', 'form[data-ajax="true"]', function (event) {
+        $(document).on('submit', 'form[data-ajax="true"][data-type!="search"]', function (event) {
             var form = $(this);
             $.ajax({
                 type: form.attr('method'),
@@ -64,8 +64,9 @@ var app = {
                         });
                     }
                 } else {
+                    $('#modal').modal('toggle');
+                    alert('Lưu dữ liệu thành công.');
                     if(response.cb){
-                        $('#modal').modal('toggle');
                         app.bindTableData(response.cb)
                     }
                 }
@@ -73,8 +74,8 @@ var app = {
 
             event.preventDefault();
         });
-        $(document).on('submit', 'form.search[data-ajax="true"]', function (event) {
-            var form = $(this);
+        $(document).on('submit', 'form[data-ajax="true"][data-type="search"]', function (event) {
+            var form = $(this), destination = form.data('destination') || 'table-result';
             $.ajax({
                 type: form.attr('method'),
                 url: form.attr('action'),
@@ -85,7 +86,7 @@ var app = {
                 }
             }).done(function (response) {
                 if (response.length > 0) {
-                    $('#table-result').html(response);
+                    $(`#${ destination }`).html(response);
                 }
             });
 
@@ -145,12 +146,12 @@ var app = {
                         success: function (response) {
 
                             if(response.cb){
-                                app.bindTableData(response.cb)
+                                app.bindTableData(response.cb, 'table-media-result')
                             }
-                            
+                            self.val('');
                             setTimeout(function () {
                                 $('.progress').hide();
-                            }, 1000);
+                            }, 100);
                         },
                         cache: false,
                         contentType: false,

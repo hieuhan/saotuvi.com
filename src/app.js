@@ -70,21 +70,23 @@ app.use((request, response, next) => {
 // for internal server error above code won't execute
 
 app.use((error, request, response, next) => {
-    let path = 'error/404', pathServerIntenerError = 'error/500',
+    let path = '/404.html', pathServerIntenerError = '/500.html',
     layout = './layouts/error';
     console.log(error)
     if(request.originalUrl.startsWith('/stv/'))
     {
-        path = 'admin/error/404';
-        pathServerIntenerError = 'admin/error/500';
+        path = '/stv/404.html';
+        pathServerIntenerError = '/stv/500.html';
         layout = './admin/layouts/error';
     }
 
     if (error.status === 404) {
-        return response.render(path, {flashMessage: {}, layout: layout });
+        //return response.render(path, { layout: layout });
+        return response.redirect(path);
     }
     
-    response.render(pathServerIntenerError, {flashMessage: {}, layout: layout});
+    //response.render(pathServerIntenerError, { layout: layout });
+    response.redirect(pathServerIntenerError);
 })
 
 

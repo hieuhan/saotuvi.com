@@ -17,7 +17,7 @@ module.exports = mongoose => {
             parentSlug: String,
             level: String,
             treeOrder: String,
-            displayOrder: Number,
+            displayOrder: { type: Number, default: 0 },
             image: String,
             controllerAction: String,
             metaTitle: String,

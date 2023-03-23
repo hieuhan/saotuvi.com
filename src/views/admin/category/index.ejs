@@ -14,20 +14,34 @@
       <div class="tab-pane preview-tab-pane active" role="tabpanel">
         <div class="card shadow-none">
           <div class="card-body p-0 pb-3">
-            <div class="d-flex align-items-center justify-content-end my-3">
-              <div id="bulk-select-replace-element">
-                <button data-url="/stv/category/create" data-method="PATCH" class="btn btn-falcon-success btn-sm popup"
-                  type="button">
-                  <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
-                  <span class="ms-1">Tạo mới</span>
-                </button>
+            <div class="d-lg-flex justify-content-between">
+              <div class="row flex-between-center gy-2">
+                <div class="col-auto">
+                  <form class="search" action="/stv/category" method="get">
+                    <div class="input-group input-search-width">
+                      <input class="form-control form-control-sm shadow-none search" name="keywords" type="search" value="<%= dataInput.keywords%>"
+                        placeholder="Tìm theo tên, mô tả, url" aria-label="search">
+                      <button class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
+                        <svg class="svg-inline--fa fa-search fa-w-16 fs--1" aria-hidden="true" focusable="false"
+                          data-prefix="fa" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 512 512" data-fa-i2svg="">
+                          <path fill="currentColor"
+                            d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z">
+                          </path>
+                        </svg>
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
-              <div class="d-none ms-3" id="bulk-select-actions">
-                <div class="d-flex">
-                  <select class="form-select form-select-sm" aria-label="Bulk actions">
-                    <option selected="selected" value="">Hành động</option>
-                    <option value="Delete">Xóa</option>
-                  </select><button class="btn btn-falcon-danger btn-sm ms-2" type="button">Áp dụng</button>
+              <div class="border-bottom border-200 my-3"></div>
+              <div class="d-flex align-items-center justify-content-end my-3">
+                <div>
+                  <button data-url="/stv/category/create" data-method="PATCH"
+                    class="btn btn-falcon-success btn-sm popup" type="button">
+                    <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
+                    <span class="ms-1">Tạo mới</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -37,11 +51,6 @@
                   <table class="table mb-0">
                     <thead class="text-black bg-200">
                       <tr>
-                        <th class="align-middle white-space-nowrap">
-                          <div class="form-check mb-0"><input class="form-check-input" type="checkbox"
-                              data-bulk-select='{"body":"bulk-select-body","actions":"bulk-select-actions","replacedElement":"bulk-select-replace-element"}' />
-                          </div>
-                        </th>
                         <th class="align-middle">Tên</th>
                         <th class="align-middle">Mô tả </th>
                         <th class="align-middle">Hình ảnh</th>
@@ -51,66 +60,62 @@
                         <th class="text-end" scope="col">Hành động</th>
                       </tr>
                     </thead>
-                    <tbody id="bulk-select-body">
-                      <%if(typeof (data) !='undefined' && data) { for(var i=0; i<data.length; i++){ %>
-                        <tr>
-                          <td class="align-middle white-space-nowrap">
-                            <div class="form-check mb-0"><input class="form-check-input" type="checkbox" id="checkbox-1"
-                                data-bulk-select-row="data-bulk-select-row" /></div>
-                          </td>
-                          <th class="align-middle">
-                            <%= data[i].name %>
-                          </th>
-                          <td class="align-middle">
-                            <%= data[i].description %>
-                          </td>
-                          <td class="align-middle">
-                            <%if(typeof (data[i].image) !='undefined' && data[i].image.trim().length> 0){%>
-                              <div class="file-thumbnail">
-                                <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
-                                  src="<%= stringHeplers.getSlug(data[i].image) %>" alt="" />
+                    <tbody>
+                      <%if(typeof (data) !='undefined' && data.length> 0) { for(var i=0; i<data.length; i++){ %>
+                          <tr>
+                            <th class="align-middle">
+                              <%= data[i].name %>
+                            </th>
+                            <td class="align-middle">
+                              <%= data[i].description %>
+                            </td>
+                            <td class="align-middle">
+                              <%if(typeof (data[i].image) !='undefined' && data[i].image.trim().length> 0){%>
+                                <div class="file-thumbnail">
+                                  <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
+                                    src="<%= stringHeplers.getSlug(data[i].image) %>" alt="" />
+                                </div>
+                                <%} %>
+                            </td>
+                            <td class="align-middle">
+                              <a href="<%= stringHeplers.getSlug(data[i].slug) %>" title="<%= data[i].name %>"
+                                target="_blank">
+                                <%= stringHeplers.getFullSlug(data[i].slug) %>
+                              </a>
+                            </td>
+                            <td class="align-middle">
+                              <%= data[i].parent !=null ? data[i].parent.name : '' %>
+                            </td>
+                            <td class="align-middle white-space-nowrap text-end pe-3">
+                              <%= data[i].createdAt.toLocaleString('en-GB', { hour12: false, }) %>
+                            </td>
+                            <td class="text-end">
+                              <div>
+                                <button data-url="/stv/category/edit/<%= data[i]._id %>" data-method="PUT"
+                                  class="btn btn-link p-0 popup" type="button" data-bs-toggle="tooltip"
+                                  data-bs-placement="top" aria-label="Edit" data-bs-original-title="Sửa">
+                                  <svg class="svg-inline--fa fa-edit fa-w-18 text-500" aria-hidden="true"
+                                    focusable="false" data-prefix="fas" data-icon="edit" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
+                                    <path fill="currentColor"
+                                      d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z">
+                                    </path>
+                                  </svg>
+                                </button>
+                                <button class="btn btn-link p-0 ms-2" type="button" data-bs-toggle="tooltip"
+                                  data-bs-placement="top" aria-label="Delete" data-bs-original-title="Xóa">
+                                  <svg class="svg-inline--fa fa-trash-alt fa-w-14 text-500" aria-hidden="true"
+                                    focusable="false" data-prefix="fas" data-icon="trash-alt" role="img"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
+                                    <path fill="currentColor"
+                                      d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z">
+                                    </path>
+                                  </svg>
+                                </button>
                               </div>
-                              <%} %>
-                          </td>
-                          <td class="align-middle">
-                            <a href="<%= stringHeplers.getSlug(data[i].slug) %>" title="<%= data[i].name %>"
-                              target="_blank">
-                              <%= stringHeplers.getSlug(data[i].slug) %>
-                            </a>
-                          </td>
-                          <td class="align-middle">
-                            <%= data[i].parent !=null ? data[i].parent.name : '' %>
-                          </td>
-                          <td class="align-middle white-space-nowrap text-end pe-3">
-                            <%= data[i].createdAt.toLocaleString('en-GB', { hour12: false, }) %>
-                          </td>
-                          <td class="text-end">
-                            <div>
-                              <button data-url="/stv/category/edit/<%= data[i]._id %>" data-method="PUT"
-                                class="btn btn-link p-0 popup" type="button" data-bs-toggle="tooltip"
-                                data-bs-placement="top" aria-label="Edit" data-bs-original-title="Sửa">
-                                <svg class="svg-inline--fa fa-edit fa-w-18 text-500" aria-hidden="true"
-                                  focusable="false" data-prefix="fas" data-icon="edit" role="img"
-                                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg="">
-                                  <path fill="currentColor"
-                                    d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z">
-                                  </path>
-                                </svg>
-                              </button>
-                              <button class="btn btn-link p-0 ms-2" type="button" data-bs-toggle="tooltip"
-                                data-bs-placement="top" aria-label="Delete" data-bs-original-title="Xóa">
-                                <svg class="svg-inline--fa fa-trash-alt fa-w-14 text-500" aria-hidden="true"
-                                  focusable="false" data-prefix="fas" data-icon="trash-alt" role="img"
-                                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg="">
-                                  <path fill="currentColor"
-                                    d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z">
-                                  </path>
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <%} }%>
+                            </td>
+                          </tr>
+                          <%} }%>
                     </tbody>
                   </table>
                 </div>

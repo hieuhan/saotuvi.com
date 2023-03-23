@@ -20,6 +20,26 @@ module.exports.getSlug = (slug) => {
     }
 }
 
+module.exports.getFullSlug = (slug) => {
+    try {
+        
+        if(slug && slug.trim().length > 0){
+            let result = slug;
+
+            while(result.startsWith('/')){
+                result = result.substring(1);
+            }
+
+            return `${ config.DOMAIN }${result}`;
+        }
+        
+        return '';
+    } catch (error) {
+        console.log(error);
+        return Promise.reject(error);
+    }
+}
+
 module.exports.getFileSize = (size) =>{
     try {
         var fSExt = new Array('Bytes', 'KB', 'MB', 'GB'),
