@@ -67,7 +67,7 @@ module.exports.loginPost = async (request, response, next) => {
             });
         }
 
-        const { accessToken, refreshToken } = await jwt.generateTokens(userExist._id);
+        const { accessToken, refreshToken } = await jwt.generateTokens(userExist._id, userExist.username);
 
         if (accessToken && refreshToken) {
             response.cookie(authConfig.COOKIE_JWT_ACCESS_SECRET_NAME, accessToken, {

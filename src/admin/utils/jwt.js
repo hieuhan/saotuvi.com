@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const config = require('../../configs/auth');
 const redis = require('../utils/redis');
 
-module.exports.generateTokens = async (userId) => {
+module.exports.generateTokens = async (userId, username) => {
     try {
-        const payload = { userId };
+        const payload = { userId, username };
 
         const accessToken = jwt.sign(
             payload,
@@ -100,7 +100,7 @@ module.exports.signAccessToken = async (userId) => {
         }
 
         const options = {
-            expiresIn: '5s'
+            expiresIn: '5m'
         }
 
         jwt.sign(payload, config.JWT_ACCESS_SECRET, options, (error, token) => {

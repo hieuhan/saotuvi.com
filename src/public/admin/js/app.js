@@ -178,6 +178,28 @@ var app = {
                 console.error(error);
             }
         });
+        $(document).on('click', '.delete', function (e) {
+            try {
+                var self = $(this), urlRequest = self.data('url') || '';
+                
+                if(urlRequest.trim().length > 0){
+                    app.fetchData({
+                        url: urlRequest,
+                        dataType: 'json',
+                        type: 'PATCH'
+                    }).then((response) => {console.log(response)
+                        if(response.success){
+                            app.bindTableData('/stv/category/binddata');
+                        }
+                        else if(response.message){
+                            alert(response.message);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
         $(document).on('change keyup paste', '.to-slug', function (e) {
             try {
                 $('.get-slug').val(app.toSlug($(this).val()))

@@ -19,8 +19,8 @@
                 <div class="col-auto">
                   <form class="search" action="/stv/category" method="get">
                     <div class="input-group input-search-width">
-                      <input class="form-control form-control-sm shadow-none search" name="keywords" type="search" value="<%= dataInput.keywords%>"
-                        placeholder="Tìm theo tên, mô tả, url" aria-label="search">
+                      <input class="form-control form-control-sm shadow-none search" name="keywords" type="search"
+                        value="<%= dataInput.keywords%>" placeholder="Tìm theo tên, mô tả, url" aria-label="search">
                       <button class="btn btn-sm btn-outline-secondary border-300 hover-border-secondary">
                         <svg class="svg-inline--fa fa-search fa-w-16 fs--1" aria-hidden="true" focusable="false"
                           data-prefix="fa" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +102,8 @@
                                     </path>
                                   </svg>
                                 </button>
-                                <button class="btn btn-link p-0 ms-2" type="button" data-bs-toggle="tooltip"
+                                <button class="btn btn-link p-0 ms-2 delete" type="button"
+                                  data-url="/stv/category/delete/<%= data[i]._id %>" data-bs-toggle="tooltip"
                                   data-bs-placement="top" aria-label="Delete" data-bs-original-title="Xóa">
                                   <svg class="svg-inline--fa fa-trash-alt fa-w-14 text-500" aria-hidden="true"
                                     focusable="false" data-prefix="fas" data-icon="trash-alt" role="img"

@@ -13,6 +13,7 @@ class CategoryService {
     static getList = async ({
         id = '',
         keywords = '',
+        isDeleted = 'false',
         page = 0,
         limit = 50
     }) => {
@@ -27,6 +28,10 @@ class CategoryService {
                 match['treeOrder'] = new RegExp(id, 'i');
             }
 
+            if(isDeleted){
+                //match['isDeleted'] = isDeleted;
+            }
+
             const categories = await Category.find(match, {
                 name: 1,
                 description: 1,
@@ -37,6 +42,7 @@ class CategoryService {
                 level: 1,
                 treeOrder: 1,
                 displayOrder: 1,
+                isDeleted: 1,
                 createdAt: 1
             }).populate('parent', '_id name')
                 .skip(page * (limit - 1))
@@ -124,6 +130,19 @@ class CategoryService {
             })
         } catch (error) {
             console.error(`CategoryService::deleteCategory::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static undoCategory = async (id, actBy) => {
+        try {
+            return await Category.updateOne({ _id: id }, {
+                isDeleted: false,
+                deletedBy: actBy,
+                deletedAt: new Date()
+            })
+        } catch (error) {
+            console.error(`CategoryService::undoCategory::${error}`);
             return Promise.reject(error);
         }
     }

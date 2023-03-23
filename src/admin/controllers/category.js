@@ -7,11 +7,11 @@ module.exports.index = async (request, response, next) => {
         let { keywords, page, limit } = request.query;
 
         page = page || 0; limit = limit || 50;
-
+        const isDeleted = 'false';
         var data = await CategoryService.getList({
-            keywords, page, limit
+            keywords, page, limit, isDeleted
         });
-
+        console.log(data)
         const dataInput = { keywords, page, limit };
 
         response.render('admin/category', { data: data, dataInput: dataInput, layout: './admin/layouts/default' });
@@ -56,7 +56,7 @@ module.exports.createPost = async (request, response, next) => {
             h1Tag, canonical, isIndex
         } = request.body;
 
-        if(category.parent.trim().length <=0) {
+        if (category.parent.trim().length <= 0) {
             category.parent = null;
         }
 
@@ -109,7 +109,7 @@ module.exports.editPost = async (request, response, next) => {
             h1Tag, canonical, isIndex
         } = request.body;
 
-        if(category.parent.trim().length <=0) {
+        if (category.parent.trim().length <= 0) {
             category.parent = null;
         }
 
@@ -121,7 +121,7 @@ module.exports.editPost = async (request, response, next) => {
 
         const categoryFind = await CategoryService.getById(id);
 
-        if(categoryFind){
+        if (categoryFind) {
             // categoryFind.name=category.name;
             // categoryFind.description = category.description;
             // categoryFind.slug = category.slug;
@@ -136,6 +136,27 @@ module.exports.editPost = async (request, response, next) => {
 
             await CategoryService.patchCategory(category);
             return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: '/stv/category/binddata' });
+        }
+
+        return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.delete = async (request, response, next) => {
+    try {
+        let { id } = request.params;
+
+        if (!id) {
+            return response.json({ success: false, error: 'Vui lòng thử lại sau.' });
+        }
+
+        const categoryFind = await CategoryService.getById(id);
+
+        if (categoryFind) {
+            await CategoryService.deleteCategory(id, request.user.username);
+            return response.json({ success: true, message: 'Xóa chuyên mục thành công', cb: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
