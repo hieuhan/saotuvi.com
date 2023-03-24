@@ -1,11 +1,11 @@
-const { Category } = require('../models')
+const { Menu } = require('../models')
 
-class CategoryService {
+class MenuService {
     static getById = async (id) => {
         try {
-            return await Category.findOne({ _id: id });
+            return await Menu.findOne({ _id: id });
         } catch (error) {
-            console.error(`CategoryService::getById::${error}`);
+            console.error(`MenuService::getById::${error}`);
             return Promise.reject(error);
         }
     }
@@ -31,33 +31,8 @@ class CategoryService {
             if (isDeleted == 1) {
                 query['isDeleted'] = true;
             }
-            // const data = await Promise.all([
-            //     Category.find(query, {
-            //         name: 1,
-            //         description: 1,
-            //         slug: 1,
-            //         image: 1,
-            //         parent: 1,
-            //         parentSlug: 1,
-            //         level: 1,
-            //         treeOrder: 1,
-            //         displayOrder: 1,
-            //         isDeleted: 1,
-            //         createdAt: 1,
-            //         deletedAt: 1,
-            //         deletedBy: 1
-            //     }).populate('parent', '_id name')
-            //         .skip(page * (limit - 1))
-            //         .limit(limit)
-            //         .sort({
-            //             treeOrder: 'asc'
-            //         }),
-            //     Category.countDocuments(query)
-            // ])
 
-            //return { categories: data[0], totalPages: Math.ceil(data[1] / limit), currentPage: page };
-
-            const categories = await Category.find(query, {
+            const menus = await Menu.find(query, {
                 name: 1,
                 description: 1,
                 slug: 1,
@@ -78,16 +53,16 @@ class CategoryService {
                     treeOrder: 'asc'
                 });
 
-            return categories;
+            return menus;
         } catch (error) {
-            console.error(`CategoryService::getList::${error}`);
+            console.error(`MenuService::getList::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static putCategory = async (category) => {
+    static putMenu = async (menu) => {
         try {
-            const createResult = await Category.create(category);
+            const createResult = await Menu.create(menu);
             if (createResult) {
                 await this.patchTreeOrder({
                     id: createResult._id,
@@ -97,7 +72,7 @@ class CategoryService {
                 });
             }
         } catch (error) {
-            console.error(`:::CategoryService.putCategory:::${error}`);
+            console.error(`:::MenuService.putMenu:::${error}`);
             return Promise.reject(error);
         }
     }
@@ -108,71 +83,71 @@ class CategoryService {
         try {
             let level = id,
                 treeOrder = `${displayOrder}:${createdAt.toISOString()}:${id}`;
-            const parent = await Category.findOne({ _id: parentId });
+            const parent = await Menu.findOne({ _id: parentId });
 
             if (parent) {
                 treeOrder = `${parent.treeOrder}/${treeOrder}`;
                 level = `${parent.level}/${level}`;
             }
 
-            const category = await Category.updateOne({
+            const menu = await Menu.updateOne({
                 _id: id
             }, {
                 level,
                 treeOrder
             });
 
-            return category;
+            return menu;
         } catch (error) {
-            console.error(`CategoryService::putCategory::${error}`);
+            console.error(`MenuService::patchTreeOrder::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static patchCategory = async (category) => {
+    static patchMenu = async (menu) => {
         try {
-            const patchResult = await Category.updateOne({ _id: category.id }, category);
+            const patchResult = await Menu.updateOne({ _id: menu.id }, menu);
 
             if (patchResult) {
                 await this.patchTreeOrder({
-                    id: category.id,
-                    parentId: category.parent != null ? category.parent.toString() : null,
-                    displayOrder: category.displayOrder || 0,
-                    createdAt: category.createdAt
+                    id: menu.id,
+                    parentId: menu.parent != null ? menu.parent.toString() : null,
+                    displayOrder: menu.displayOrder || 0,
+                    createdAt: menu.createdAt
                 });
             }
 
         } catch (error) {
-            console.error(`:::CategoryService.patchCategory:::${error}`);
+            console.error(`:::MenuService.patchMenu:::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static deleteCategory = async (id, deletedBy) => {
+    static delete = async (id, deletedBy) => {
         try {
-            return await Category.updateOne({ _id: id, isDeleted: false }, {
+            return await Menu.updateOne({ _id: id, isDeleted: false }, {
                 isDeleted: true,
                 deletedBy: deletedBy,
                 deletedAt: new Date()
             })
         } catch (error) {
-            console.error(`CategoryService::deleteCategory::${error}`);
+            console.error(`MenuService::delete::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static recoverDeleteCategory = async (id, recoverDeletedBy) => {
+    static recoverDelete = async (id, recoverDeletedBy) => {
         try {
-            return await Category.updateOne({ _id: id, isDeleted: true }, {
+            return await Menu.updateOne({ _id: id, isDeleted: true }, {
                 isDeleted: false,
                 recoverDeletedBy: recoverDeletedBy,
                 recoverDeletedAt: new Date()
             })
         } catch (error) {
-            console.error(`CategoryService::recoverDeleteCategory::${error}`);
+            console.error(`MenuService::recoverDelete::${error}`);
             return Promise.reject(error);
         }
     }
 }
 
-module.exports = CategoryService;
+module.exports = MenuService;

@@ -13,26 +13,30 @@ module.exports = mongoose => {
                 required: true
             },
             slug: { type: String, required: true, unique: true },
-            category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
-            categories: [
+            // category: {
+            //     type: mongoose.Schema.Types.ObjectId,
+            //     ref: 'Category'
+            // },
+            category: [
                 {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Category'
                 }
             ],
-            tags: [
+            tag: [
                 {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Tag'
                 }
             ],
-            indexes: [
+            index: [
                 {
                     title: String,
                     bookmark: String
                 }
             ],
             image: String,
+            displayOrder: Number,
             metaTitle: String,
             metaDescription: String,
             metaKeywords: String,

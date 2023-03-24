@@ -178,18 +178,22 @@ var app = {
                 console.error(error);
             }
         });
-        $(document).on('click', '.delete', function (e) {
+        $(document).on('click', 'button[data-ajax="true"]', function (e) {
             try {
-                var self = $(this), urlRequest = self.data('url') || '';
-                
+                var self = $(this), urlRequest = self.data('url') || '',
+                method = self.data('method') || 'POST', dataType = self.data('type') || 'json',
+                bindDataUrl = self.data('bind') || '';
+
                 if(urlRequest.trim().length > 0){
                     app.fetchData({
+                        type: method,
                         url: urlRequest,
-                        dataType: 'json',
-                        type: 'PATCH'
-                    }).then((response) => {console.log(response)
+                        dataType: dataType
+                    }).then((response) => {
                         if(response.success){
-                            app.bindTableData('/stv/category/binddata');
+                            if(bindDataUrl.trim().length > 0){
+                                app.bindTableData(bindDataUrl);
+                            }
                         }
                         else if(response.message){
                             alert(response.message);

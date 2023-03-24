@@ -32,7 +32,9 @@ module.exports = mongoose => {
             updatedBy: String,
             updatedAt: Date,
             deletedBy: String,
-            deletedAt: Date
+            deletedAt: Date,
+            recoverDeletedBy: String,
+            recoverDeletedAt: Date
         },
         {
             collection: 'categories',

@@ -4,15 +4,18 @@ const CategoryService = require('../services/category');
 
 module.exports.index = async (request, response, next) => {
     try {
-        let { keywords, page, limit } = request.query;
+        //await Category.updateMany({isDeleted : false});
+        const { keywords = '', page = 0, limit = 50, isDeleted = 0 } = request.query;
 
-        page = page || 0; limit = limit || 50;
-        const isDeleted = 'false';
-        var data = await CategoryService.getList({
+        // const data =  { categories, totalPages, currentPage } = await CategoryService.getList({
+        //     keywords, page, limit, isDeleted
+        // });
+
+        const data = await CategoryService.getList({
             keywords, page, limit, isDeleted
         });
-        console.log(data)
-        const dataInput = { keywords, page, limit };
+
+        const dataInput = { keywords, page, limit, isDeleted };
 
         response.render('admin/category', { data: data, dataInput: dataInput, layout: './admin/layouts/default' });
     } catch (error) {
@@ -20,14 +23,28 @@ module.exports.index = async (request, response, next) => {
     }
 }
 
-module.exports.binddata = async (request, response, next) => {
+module.exports.trash = async (request, response, next) => {
     try {
-        let { keywords, page, limit } = request.body;
-
-        page = page || 0; limit = limit || 50;
+        const { keywords = '', page = 0, limit = 50, isDeleted = 0 } = request.query;
 
         var data = await CategoryService.getList({
-            keywords, page, limit
+            keywords, page, limit, isDeleted
+        });
+
+        const dataInput = { keywords, page, limit, isDeleted };
+
+        response.render('admin/category/trash', { data: data, dataInput: dataInput, layout: './admin/layouts/default' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.binddata = async (request, response, next) => {
+    try {
+        let { keywords = '', page = 0, limit = 50, isDeleted = 0 } = request.query;
+
+        var data = { categories, totalPages, currentPage } = await CategoryService.getList({
+            keywords, page, limit, isDeleted
         });
 
         response.render('admin/category/binddata', { data: data, layout: './admin/layouts/modal' });
@@ -157,6 +174,27 @@ module.exports.delete = async (request, response, next) => {
         if (categoryFind) {
             await CategoryService.deleteCategory(id, request.user.username);
             return response.json({ success: true, message: 'Xóa chuyên mục thành công', cb: '/stv/category/binddata' });
+        }
+
+        return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports.recover = async (request, response, next) => {
+    try {
+        let { id } = request.params;
+
+        if (!id) {
+            return response.json({ success: false, error: 'Vui lòng thử lại sau.' });
+        }
+
+        const categoryFind = await CategoryService.getById(id);
+
+        if (categoryFind) {
+            await CategoryService.recoverDeleteCategory(id, request.user.username);
+            return response.json({ success: true, message: 'Phục hồi dữ liệu chuyên mục thành công', cb: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });

@@ -1,3 +1,4 @@
+const { promiseImpl } = require('ejs');
 const { Media } = require('../models');
 
 class MediaService {
@@ -7,27 +8,31 @@ class MediaService {
         limit = 50
     }) => {
         try {
-            const match = {};
+            const query = {};
 
             if (keywords.trim().length > 0) {
-                match['$text'] = { $search: keywords };
+                query['$text'] = { $search: keywords };
             }
 
-            const medias = await Media.find(match, {
-                name: 1,
-                path: 1,
-                content: 1,
-                size: 1,
-                contentType: 1,
-                createdAt: 1
-            })
-                .sort({
-                    createdAt: 'desc'
+            const data = await Promise.all([
+                Media.find(query, {
+                    name: 1,
+                    path: 1,
+                    content: 1,
+                    size: 1,
+                    contentType: 1,
+                    createdAt: 1
                 })
-                .skip(page * (limit - 1))
-                .limit(limit);
+                    .sort({
+                        createdAt: 'desc'
+                    })
+                    .skip(page * (limit - 1))
+                    .limit(limit),
 
-            return medias;
+                Media.countDocuments(query)
+            ]);
+
+            return { medias: data[0], totalPages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
             console.error(`MediaService::getList::${error}`);
             return Promise.reject(error);

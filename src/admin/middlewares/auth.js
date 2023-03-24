@@ -10,7 +10,7 @@ module.exports = async (request, response, next) => {
         }
 
         const payload = jwt.verifyAccessToken(accessTokenCookie);
-
+        
         if (payload.userId) {
             request.user = payload;
         } else if (payload.name && payload.name == 'TokenExpiredError') {

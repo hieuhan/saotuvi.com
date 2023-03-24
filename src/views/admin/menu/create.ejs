@@ -1,12 +1,12 @@
 <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
-    <h4 class="mb-1">Thêm chuyên mục </h4>
+    <h4 class="mb-1">Thêm menu </h4>
 </div>
 <div class="p-4">
-    <form action="/stv/category/create" method="put" data-ajax="true">
+    <form action="/stv/menu/create" method="put" data-ajax="true">
         <div class="card-body">
             <div class="row gx-2">
-                <div class="col-sm-6 mb-3"><label class="form-label" for="start-date">Tên chuyên mục</label>
-                    <input class="form-control to-slug" name="name" type="text" placeholder="Tên chuyên mục" />
+                <div class="col-sm-6 mb-3"><label class="form-label" for="start-date">Tên menu</label>
+                    <input class="form-control to-slug" name="name" type="text" placeholder="Tên menu" />
                     <label for="name" class="form-check-label mb-0 text-danger"></label>
                 </div>
                 <div class="col-sm-6 mb-3"><label class="form-label" for="start-time">Mô tả</label>
@@ -14,16 +14,16 @@
                 </div>
                 <div class="col-sm-6 mb-3">
                     <label class="form-label" for="end-date">Url</label>
-                    <input class="form-control get-slug" name="slug" type="text" placeholder="Url chuyên mục" />
+                    <input class="form-control get-slug" name="slug" type="text" placeholder="Url" />
                     <label for="slug" class="form-check-label mb-0 text-danger"></label>
                 </div>
-                <div class="col-sm-6 mb-3"><label class="form-label" for="end-time">Chuyên mục cha</label>
+                <div class="col-sm-6 mb-3"><label class="form-label" for="end-time">Menu cha</label>
                     <select class="form-select" name="parent">
                         <option value="">...</option>
-                        <%if (typeof (data) !='undefined' && data.length> 0) {
-                            for(var index = 0; index < data.length; index ++) {%>
-                                <option value="<%= data[index]._id %>">
-                                    <%= data[index].name %>
+                        <%if (typeof (data) !='undefined' && typeof (data.menus) !='undefined' && data.menus.length> 0) {
+                            for(var index = 0; index < data.menus.length; index ++) {%>
+                                <option value="<%= data.menus[index]._id %>">
+                                    <%= data.menus[index].name %>
                                 </option>
                                 <%} }%>
                     </select>
@@ -59,14 +59,27 @@
                     <div class="border-bottom border-dashed my-3"></div>
                 </div>
                 <div class="col-sm-6 mb-3">
-                    <label class="form-label">Controller / Action</label>
-                    <input class="form-control" name="controllerAction" type="text" placeholder="Controller / Action" />
-                    <!-- <button class="btn btn-link btn-sm btn p-0" type="button">Online Event</button> -->
+                    <label class="form-label">Chuyên mục</label>
+                    <select class="form-select" name="category">
+                        <option value="">...</option>
+                        <%if (typeof (data) !='undefined' && typeof (data.categories) !='undefined' && data.categories.length> 0) {
+                            for(var index = 0; index < data.categories.length; index ++) {%>
+                                <option value="<%= data.categories[index]._id %>">
+                                    <%= data.categories[index].name %>
+                                </option>
+                                <%} }%>
+                    </select>
                 </div>
                 <div class="col-sm-6 mb-3">
-                    <label class="form-label">Tiêu đề SEO</label>
-                    <input class="form-control" name="metaTitle" type="text" placeholder="Tiêu đề SEO" />
+                    <label class="form-label">Vị trí</label>
+                    <select class="form-select" name="position">
+                        <option value="TOP">Trên</option>
+                        <option value="BOTTOM">phải</option>
+                        <option value="LEFT">Dưới</option>
+                        <option value="RIGHT">Trái</option>
+                    </select>
                 </div>
+                <!--
                 <div class="col-sm-6 mb-3">
                     <label class="form-label">Mô tả SEO</label>
                     <input class="form-control" name="metaDescription" type="text" placeholder="Mô tả SEO" />
@@ -83,7 +96,7 @@
                 <div class="col-sm-6 mb-3">
                     <label class="form-label">Thẻ Canonical</label>
                     <input class="form-control" name="canonical" type="text" placeholder="Thẻ Canonical" />
-                </div>
+                </div> -->
             </div>
         </div>
     </form>

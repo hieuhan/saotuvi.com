@@ -11,7 +11,7 @@ module.exports.index = async (request, response, next) => {
         var data = await MediaService.getList({
             keywords, page, limit
         });
-
+        
         response.render('admin/media', { data: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
