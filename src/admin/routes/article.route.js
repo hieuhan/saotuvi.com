@@ -5,6 +5,6 @@ const articleController = require('../controllers/article');
 
 router.get('/', articleController.index);
 //router.post('/binddata', menuController.binddata);
-router.get('/create', articleController.create);//.put('/create', articleController.createPost);
+router.get('/create', articleController.create).put('/create', articleController.createPost);
 
 module.exports = router;

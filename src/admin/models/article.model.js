@@ -13,11 +13,11 @@ module.exports = mongoose => {
                 required: true
             },
             slug: { type: String, required: true, unique: true },
-            // category: {
-            //     type: mongoose.Schema.Types.ObjectId,
-            //     ref: 'Category'
-            // },
-            category: [
+            category: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Category'
+            },
+            subCategory: [
                 {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: 'Category'
@@ -29,7 +29,7 @@ module.exports = mongoose => {
                     ref: 'Tag'
                 }
             ],
-            index: [
+            catalog: [
                 {
                     title: String,
                     bookmark: String
@@ -43,13 +43,13 @@ module.exports = mongoose => {
             h1Tag: String,
             canonical: String,
             isIndex: { type: Boolean, default: true },
-            isDeleted: { type: Boolean, default: false },
+            isDraft: { type: Boolean, default: false },
             createdBy: String,
             createdAt: { type: Date, default: Date.now },
             updatedBy: String,
             updatedAt: Date,
-            deletedBy: String,
-            deletedAt: Date,
+            draftedBy: String,
+            draftedAt: Date,
             publishedBy: String,
             publishedAt: Date,
             republishedBy: String,

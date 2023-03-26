@@ -13,7 +13,7 @@ class ArticleService {
     static getPage = async ({
         keywords = '',
         category = '',
-        isDeleted = 0,
+        isDraft = 0,
         page = 0,
         limit = 50
     }) => {
@@ -28,31 +28,34 @@ class ArticleService {
                 query['category'] = category;
             }
 
-            if (isDeleted == 1) {
-                query['isDeleted'] = true;
+            if (isDraft == 1) {
+                query['isDraft'] = true;
             }
 
-            const articles = await Article.find(query, {
-                title: 1,
-                summary: 1,
-                slug: 1,
-                image: 1,
-                category: 1,
-                //categories: 1,
-                displayOrder: 1,
-                isDeleted: 1,
-                createdAt: 1,
-                deletedAt: 1,
-                deletedBy: 1
-            }).populate('category', '_id name  slug')
-                .skip(page * (limit - 1))
-                .limit(limit)
-                .sort({
-                    publishedAt: 'asc',
-                    createdAt: 'asc'
-                });
+            const data = await Promise.all([
+                Article.find(query, {
+                    title: 1,
+                    summary: 1,
+                    slug: 1,
+                    image: 1,
+                    category: 1,
+                    subCategory: 1,
+                    displayOrder: 1,
+                    isDraft: 1,
+                    createdAt: 1,
+                    draftedBy: 1,
+                    draftedAt: 1
+                }).populate('subCategory', '_id name  slug')
+                    .skip(page * (limit - 1))
+                    .limit(limit)
+                    .sort({
+                        publishedAt: 'desc',
+                        createdAt: 'desc'
+                    }),
+                Article.countDocuments(query)
+            ]);
 
-            return articles;
+            return { data: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
             console.error(`ArticleService::getList::${error}`);
             return Promise.reject(error);

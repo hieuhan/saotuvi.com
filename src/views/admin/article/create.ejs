@@ -1,181 +1,171 @@
-<div class="row gx-3">
-    <div class="col-xxl-10 col-xl-9">
-        <div class="card" id="ticketsTable"
-            data-list='{"valueNames":["client","subject","status","priority","agent"],"page":11,"pagination":true,"fallback":"tickets-table-fallback"}'>
-            <div class="card-body bg-light">
-                <form class="row g-3">
-                    <div class="col-lg-12"> <label class="form-label" for="first-name">Tiêu đề</label>
-                        <input class="form-control" name="title" type="text" />
-                    </div>
-                    <div class="col-lg-12">
-                        <label class="form-label" for="last-name">Tích dẫn</label>
-                        <input class="form-control" type="text" value="" />
-                    </div>
-                    <div class="col-lg-9">
-                        <label class="form-label" for="last-name">Url</label>
-                        <input class="form-control" type="text" value="" />
-                    </div>
-                    <div class="col-lg-3">
-                        <label class="form-label" for="time-zone">Hình ảnh</label>
-                <div class="d-flex mb-3 hover-actions-trigger align-items-center">
-                    <div class="file-thumbnail">
-                        <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="" alt="" />
-                        <input class="form-control" name="image" type="hidden" />
-                    </div>
-                    <div class="ms-3 flex-shrink-1 flex-grow-1">
-                        <div class="hover-actions end-0 top-50 translate-middle-y">
-                            <!-- <a class="btn btn-light border-300 btn-sm me-1 text-600" data-bs-toggle="tooltip"
-                                data-bs-placement="top" href="/admin/img/icons/cloud-download.svg"
-                                download="download" aria-label="Download" data-bs-original-title="Download">
-                                <img src="/admin/img/icons/cloud-download.svg" alt="" width="15">
-                            </a> -->
-                            <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none select-media"
-                                data-url="/stv/media" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
-                                aria-label="Edit" data-bs-original-title="Edit">
-                                <img src="/admin/img/icons/edit-alt.svg" alt="" width="15">
-                            </button>
+<div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+    <h4 class="mb-1">Thêm bài viết </h4>
+</div>
+<form action="/stv/article/create" method="put" data-ajax="true">
+    <div class="row g-0">
+        <div class="col-lg-8 pe-lg-2">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Thông tin chính</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row gx-2">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Tiêu đề<span class="text-danger">*</span></label>
+                            <input class="form-control" name="title" type="text" placeholder="Tiêu đề bài viết" />
+                            <label for="title" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Trích dẫn</label>
+                            <textarea class="form-control" name="summary" rows="3"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Url<span class="text-danger">*</span></label>
+                            <input class="form-control" name="slug" type="text" placeholder="Url bài viết" />
+                            <label for="slug" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-sm-9 mb-3-"></div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label">Chuyên mục chính<span class="text-danger">*</span></label>
+                            <select name="category" class="form-select">
+                                <%if(typeof (data) !='undefined' && data.length> 0){
+                                    for(var index = 0; index < data.length; index ++){%>
+                                        <option value="<%= data[index]._id%>"><%= data[index].name%></option>
+                                    <%}
+                                 }%>
+                            </select>
+                            <label for="category" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-sm-3 mb-3">
+                            <label class="form-label">Ảnh bài viết</label>
+                            <div class="d-flex mb-3 hover-actions-trigger align-items-center">
+                                <div class="file-thumbnail">
+                                    <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="" alt="" />
+                                    <input class="form-control" name="image" type="hidden" />
+                                </div>
+                                <div class="ms-3 flex-shrink-1 flex-grow-1">
+                                    <div class="hover-actions end-0 top-50 translate-middle-y">
+                                        <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none popup"
+                                            data-modal="media-modal" data-url="/stv/media" type="button"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit"
+                                            data-bs-original-title="Edit">
+                                            <img src="/admin/img/icons/edit-alt.svg" alt="" width="15">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-12">
+                                <div class="border-bottom border-dashed my-3"></div>
+                            </div> -->
+                        <div class="col-12">
+                            <label class="form-label">Nội dung<span class="text-danger">*</span></label>
+                            <textarea name="content" class="form-control tinymce" rows="6"></textarea>
+                            <label for="content" class="form-check-label mb-0 text-danger"></label>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Thông tin SEO</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row gx-2">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" id="IsIndex" type="checkbox" value="true"
+                                    checked="checked" />
+                                <label class="form-check-label" for="IsIndex">Google Index</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Tiêu đề SEO</label>
+                            <input class="form-control" name="metaTitle" type="text" placeholder="Tiêu đề SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Mô tả SEO</label>
+                            <input class="form-control" name="metaDescription" type="text" placeholder="Tiêu đề SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Từ khóa SEO</label>
+                            <input class="form-control" name="metaKeywords" type="text" placeholder="Từ khóa SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Thẻ H1</label>
+                            <input class="form-control" name="h1Tag" type="text" placeholder="Thẻ H1" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Canonical</label>
+                            <input class="form-control" name="canonical" type="text" placeholder="Canonical" />
+                        </div>
                     </div>
-                    <div class="col-lg-12"> <label class="form-label" for="intro">Nội dung</label>
-                        <textarea class="form-control" id="intro" name="intro" cols="30" rows="13"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 ps-lg-2">
+            <div class="sticky-sidebar">
+                <div class="card mb-lg-0">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin khác</h5>
                     </div>
-                    <div class="col-12 d-flex justify-content-end">
-                        <button class="btn btn-primary" type="submit">Update</button>
+                    <div class="card-body bg-light">
+                        <div class="mb-3">
+                            <label class="form-label">Chuyên mục khác</label>
+                            <%if(typeof (data) !='undefined' && data.length> 0){%>
+                                <div class="collapse show" style="max-height:300px;overflow:auto;">
+                                    <ul class="list-unstyled" style="padding-left: 4px;">
+                                        <%for(var index=0; index < data.length; index ++){ let level='' ; const
+                                            levels=data[index].level.split('/'); for(var i=0; i < levels.length; i++){
+                                                if(i> 0){
+                                                    level += '-';
+                                                }
+                                            }%>
+                                            <li>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="<%=data[index]._id%>" name="subCategory"
+                                                        type="checkbox" value="<%=data[index]._id%>" />
+                                                    <label class="form-check-label" for="<%=data[index]._id%>">
+                                                        <%=level%>
+                                                            <%=data[index].name%>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <%}%>
+                                    </ul>
+                                </div>
+                                <%}%>
+                        </div>
+                        <!-- <div class="mb-3">
+                            <label class="form-label" for="event-tags">Tags</label>
+                            <select class="form-select" name="tag" multiple="multiple">
+                                <option value="">Select tags...</option>
+                                <option>Concert</option>
+                                <option>New Year</option>
+                                <option>Party</option>
+                            </select>
+                        </div>
+                        <div class="border-bottom border-dashed my-3"></div>
+                        <h6>Listing Privacy</h6>
+                        <div class="mb-3 form-check"><input class="form-check-input" id="customRadio4" type="radio"
+                                name="listingPrivacy" checked="checked" /><label class="form-label mb-0"
+                                for="customRadio4"> <strong>Public page:</strong></label>
+                            <div class="form-text mt-0">Discoverable by anyone on Falcon, our distribution partners, and
+                                search engines.</div>
+                        </div>
+                        <div class="mb-3 form-check"><input class="form-check-input" id="customRadio5" type="radio"
+                                name="listingPrivacy" /><label class="form-label mb-0" for="customRadio5">
+                                <strong>Private page:</strong></label>
+                            <div class="form-text mt-0">Accessible only by people you specify. </div>
+                        </div>
+                        <div class="border-bottom border-dashed my-3"></div>
+                        <h6>Remaining Tickets</h6>
+                        <div class="form-check custom-checkbox mb-0"><input class="form-check-input" id="customRadio6"
+                                type="checkbox" /><label class="form-label mb-0" for="customRadio6">Show the number of
+                                remaining tickets. </label></div> -->
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-xxl-2 col-xl-3">
-        <div class="card mb-3">
-            <div class="card-header">
-              <h5 class="mb-0">Chuyên mục</h5>
-            </div>
-            <div class="card-body bg-light">
-                <aside class="scrollbar-overlay">
-                    <!-- Default checkbox -->
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-    <label class="form-check-label" for="flexCheckDefault">Default checkbox</label>
-  </div>
-  
-  <!-- Checked checkbox -->
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked/>
-    <label class="form-check-label" for="flexCheckChecked">Checked checkbox</label>
-  </div>
-                  </aside>
-              
-            </div>
-          </div>
-
-          <div class="card mb-3">
-            
-          </div>
-        <!-- <div class="offcanvas offcanvas-end offcanvas-filter-sidebar border-0 dark__bg-card-dark h-auto rounded-xl-3"
-            tabindex="-1" id="ticketOffcanvas" aria-labelledby="ticketOffcanvasLabel">
-            <div class="offcanvas-header d-flex flex-between-center d-xl-none bg-light">
-                <h6 class="fs-0 mb-0 fw-semi-bold">Filter</h6><button class="btn-close text-reset d-xl-none shadow-none"
-                    id="ticketOffcanvasLabel" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="card scrollbar shadow-none shadow-show-xl">
-                <div class="card-header bg-light d-none d-xl-block">
-                    <h6 class="mb-0">Filter</h6>
-                </div>
-                <div class="card-body">
-                    <form>
-                        <div class="mb-2 mt-n2"><label class="mb-1">Priority</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Urgent</option>
-                                <option>High</option>
-                                <option>Medium</option>
-                                <option>Low</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Source</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Email</option>
-                                <option>Phone</option>
-                                <option>Forum</option>
-                                <option selected="selected">Facebook</option>
-                                <option>Twitter</option>
-                                <option>Chat</option>
-                                <option>Whatsapp</option>
-                                <option>Portal</option>
-                                <option>Bots</option>
-                                <option>External Email</option>
-                                <option>Ecommerce</option>
-                                <option>Feedback Widget</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Status</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Recent</option>
-                                <option>Overdue</option>
-                                <option>Closed</option>
-                                <option>Remaining</option>
-                                <option>Responded</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Group</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>My Group</option>
-                                <option>Billing</option>
-                                <option>Customer Support</option>
-                                <option>Enhancement</option>
-                                <option>Unassigned</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Agent</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Anindya</option>
-                                <option>Nowrin</option>
-                                <option>Khalid</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Type</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Question</option>
-                                <option>Incident</option>
-                                <option>Problem</option>
-                                <option>Feature Request</option>
-                                <option>Refund</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Category</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>General Issue</option>
-                                <option>Maintenance</option>
-                                <option>Engineering</option>
-                                <option>Accounts</option>
-                                <option>Feedback</option>
-                                <option selected="selected">Support</option>
-                                <option>Test Helpdesk</option>
-                            </select></div>
-                        <div class="mb-2"><label class="mb-1 mt-2">Tags</label><select
-                                class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Sales</option>
-                                <option>Request</option>
-                                <option>Complaint</option>
-                                <option>Feedback</option>
-                                <option>Support</option>
-                            </select></div>
-                        <div><label class="mb-1 mt-2">Subscription</label><select class="form-select form-select-sm">
-                                <option>None</option>
-                                <option>Active</option>
-                                <option>Inactive</option>
-                                <option>Expired</option>
-                                <option>Pending</option>
-                            </select></div>
-                    </form>
-                </div>
-                <div class="card-footer border-top border-200 py-x1"><button
-                        class="btn btn-primary w-100">Update</button></div>
-            </div>
-        </div> -->
-    </div>
-</div>
+</form>

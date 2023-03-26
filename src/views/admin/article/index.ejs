@@ -40,10 +40,11 @@
                             <div class="border-bottom border-200 my-3"></div>
                             <div class="d-flex align-items-center justify-content-end my-3">
                                 <div>
-                                    <a href="/stv/article/create" class="btn btn-falcon-success btn-sm" type="button">
+                                    <button data-url="/stv/article/create" data-method="PATCH" data-modal-size="modal-xl" data-bs-toggle="modal" data-bs-target="#modal"
+                                        class="btn btn-falcon-success btn-sm popup" type="button">
                                         <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
                                         <span class="ms-1">Tạo mới</span>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -55,63 +56,57 @@
                                             <tr>
                                                 <th class="align-middle">Tiêu đề</th>
                                                 <th class="align-middle">Chuyên mục </th>
-                                                <th class="align-middle">Hình ảnh</th>
+                                                <th class="align-middle">Ảnh</th>
                                                 <th class="align-middle">Url</th>
-                                                <th class="align-middle">Đã xóa</th>
+                                                <th class="align-middle">Nháp</th>
                                                 <th class="align-middle white-space-nowrap pe-3">Ngày tạo</th>
                                                 <!-- <th class="align-middle white-space-nowrap pe-3">Ngày xóa</th> -->
                                                 <th class="text-end" scope="col">Hành động</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <%if(typeof (data) !='undefined' && typeof (data.articles) !='undefined' &&
-                                                data.articles.length> 0) { for(var i=0; i<data.articles.length; i++){
-                                                    const isDeleted=typeof (data.articles[i].isDeleted) !='undefined' &&
-                                                    data.articles[i].isDeleted %>
+                                            <%if(typeof (data) !='undefined' && typeof (data.articles.data) !='undefined' &&
+                                                data.articles.data.length> 0) { for(var i=0; i<data.articles.data.length; i++){
+                                                    const isDraft = typeof (data.articles.data[i].isDraft) !='undefined' &&
+                                                    data.articles.data[i].isDraft %>
                                                     <tr>
                                                         <th class="align-middle">
-                                                            <%= data.articles[i].name %>
+                                                            <%= data.articles.data[i].title %>
                                                         </th>
                                                         <td class="align-middle">
-                                                            <!-- <%= data.articles[i].summary %> -->
+                                                            <%= data.articles.data[i].subCategory ? data.articles.data[i].subCategory.map(c => c.name).join(', ') : '' %>
                                                         </td>
                                                         <td class="align-middle">
-                                                            <%if(typeof (data.articles[i].image) !='undefined' &&
-                                                                data.articles[i].image.trim().length> 0){%>
+                                                            <%if(typeof (data.articles.data[i].image) !='undefined' &&
+                                                                data.articles.data[i].image.trim().length> 0){%>
                                                                 <div class="file-thumbnail">
                                                                     <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
-                                                                        src="<%= stringHeplers.getSlug(data.articles[i].image) %>"
+                                                                        src="<%= stringHeplers.getSlug(data.articles.data[i].image) %>"
                                                                         alt="" />
                                                                 </div>
                                                                 <%} %>
                                                         </td>
                                                         <td class="align-middle">
-                                                            <a href="<%= stringHeplers.getSlug(data.articles[i].slug) %>"
-                                                                title="<%= data.articles[i].name %>" target="_blank">
-                                                                <%= stringHeplers.getFullSlug(data.articles[i].slug) %>
+                                                            <a href="<%= stringHeplers.getSlug(data.articles.data[i].slug) %>"
+                                                                title="<%= data.articles.data[i].name %>" target="_blank">
+                                                                <%= stringHeplers.getFullSlug(data.articles.data[i].slug) %>
                                                             </a>
-                                                        </td>
-                                                        <td class="align-middle">
-
                                                         </td>
                                                         <td class="align-middle">
                                                             <div class="form-check form-switch">
                                                                 <input class="form-check-input" type="checkbox"
-                                                                    <%=isDeleted ? `checked=${
-                                                                    data.articles[i].isDeleted }` : '' %> disabled="" />
+                                                                    <%=isDraft ? `checked=${
+                                                                    data.articles.data[i].isDraft }` : '' %> disabled="" />
                                                             </div>
                                                         </td>
                                                         <td class="align-middle white-space-nowrap text-end pe-3">
-                                                            <%= data.articles[i].createdAt.toLocaleString('en-GB', {
+                                                            <%= data.articles.data[i].createdAt.toLocaleString('en-GB', {
                                                                 hour12: false, }) %>
                                                         </td>
-                                                        <!-- <td class="align-middle white-space-nowrap text-end pe-3">
-                                <%= typeof (data[i].deletedAt) != 'undefined' ? data[i].deletedAt.toLocaleString('en-GB', { hour12: false, }) : ''%>
-                              </td> -->
                                                         <td class="text-end">
                                                             <div>
                                                                 <button
-                                                                    data-url="/stv/article/edit/<%= data.articles[i]._id %>"
+                                                                    data-url="/stv/article/edit/<%= data.articles.data[i]._id %>"
                                                                     data-method="PUT" class="btn btn-link p-0 popup"
                                                                     type="button" title="Sửa">
                                                                     <svg class="svg-inline--fa fa-edit fa-w-18 text-500"
@@ -124,10 +119,10 @@
                                                                         </path>
                                                                     </svg>
                                                                 </button>
-                                                                <%if(isDeleted){%>
+                                                                <%if(isDraft){%>
                                                                     <button class="btn btn-link p-0 ms-2" type="button"
                                                                         data-ajax="true"
-                                                                        data-url="/stv/article/recover/<%= data.articles[i]._id %>"
+                                                                        data-url="/stv/article/recover/<%= data.articles.data[i]._id %>"
                                                                         data-method="PATCH"
                                                                         data-bind="/stv/article/binddata"
                                                                         title="Phục hồi dữ liệu">
@@ -145,7 +140,7 @@
                                                                     <%}else{%>
                                                                         <button class="btn btn-link p-0 ms-2"
                                                                             type="button" data-ajax="true"
-                                                                            data-url="/stv/article/delete/<%= data.articles[i]._id %>"
+                                                                            data-url="/stv/article/delete/<%= data.articles.data[i]._id %>"
                                                                             data-method="PATCH"
                                                                             data-bind="/stv/article/binddata"
                                                                             title="Xóa">
@@ -169,7 +164,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <%- include('../partials/pagination') %>
+                            <%- include('../partials/pagination', {pages: data.articles.pages, currentPage: data.articles.currentPage}) %>
                         </div>
                     </div>
                 </div>

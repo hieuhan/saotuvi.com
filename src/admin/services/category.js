@@ -72,8 +72,8 @@ class CategoryService {
                 deletedAt: 1,
                 deletedBy: 1
             }).populate('parent', '_id name')
-                .skip(page * (limit - 1))
-                .limit(limit)
+                //.skip(page * (limit - 1))
+                //.limit(limit)
                 .sort({
                     treeOrder: 'asc'
                 });

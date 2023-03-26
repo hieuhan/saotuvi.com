@@ -6,7 +6,10 @@ var app = {
         $(document).on('click', '.popup', function (e) {
             e.preventDefault();
             try {
-                var self = $(this), urlRequest = self.data('url') || '';
+                var self = $(this), urlRequest = self.data('url') || '', 
+                modal = $(`#${ self.data('modal') || 'modal' }`), modalDialog = modal.find('.modal-dialog').first(), 
+                modalSize = self.data('modal-size') || 'modal-lg';
+                modalDialog.attr('class', `modal-dialog ${ modalSize } modal-dialog-centered`);
 
                 if (urlRequest.trim().length > 0) {
                     app.fetchData({
@@ -14,32 +17,19 @@ var app = {
                         dataType: 'html',
                         type: 'GET'
                     }).then((response) => {
-                        const modalContent = $('#modal').find('.modal-body').first();
+                        const modalContent = modal.find('.modal-body').first();
                         modalContent.html(response);
-                        $('#modal').modal('show');
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        });
-        $(document).on('click', '.select-media', function (e) {
-            e.preventDefault();
-            try {
-                var self = $(this), urlRequest = self.data('url') || '',
-                    popup = $('#media-modal');
-
-                if (urlRequest.trim().length > 0) {
-                    app.fetchData({
-                        url: urlRequest,
-                        dataType: 'html',
-                        type: 'GET'
-                    }).then((response) => {
-                        const modalContent = popup.find('.modal-body').first();
-                        if (modalContent.length > 0) {
-                            modalContent.html(response);
-                            popup.modal('show');
-                        }
+                        setTimeout(() => {
+                            tinymce.init({
+                                selector:   "textarea",
+                                width:      '100%',
+                                height:     270,
+                                plugins:    "link",
+                                statusbar:  false,
+                                toolbar:    "link"
+                            });
+                        }, 200);
+                        modal.modal('show');
                     });
                 }
             } catch (error) {

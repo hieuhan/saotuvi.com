@@ -32,7 +32,7 @@ class MediaService {
                 Media.countDocuments(query)
             ]);
 
-            return { medias: data[0], totalPages: Math.ceil(data[1] / limit), currentPage: page };
+            return { medias: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
             console.error(`MediaService::getList::${error}`);
             return Promise.reject(error);
