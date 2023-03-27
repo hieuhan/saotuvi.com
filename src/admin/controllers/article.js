@@ -17,7 +17,7 @@ module.exports.index = async (request, response, next) => {
 
         const dataInput = { keywords, category, page, isDraft };
 
-        response.render('admin/article', { request: request, categories: data[0], articles: data[1], dataInput: dataInput, layout: './admin/layouts/default' });
+        response.render('admin/article', { categories: data[0], articles: data[1], dataInput: dataInput, layout: './admin/layouts/default' });
     } catch (error) {
         next(error);
     }
@@ -31,7 +31,7 @@ module.exports.binddata = async (request, response, next) => {
             keywords, category, page, limit, isDraft
         })
 
-        response.render('admin/article/binddata', { request: request, articles : data, layout: './admin/layouts/modal' });
+        response.render('admin/article/binddata', { articles : data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
