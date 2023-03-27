@@ -5,7 +5,7 @@
     <form action="/stv/category/edit" method="patch" data-ajax="true">
         <div class="card-body">
             <div class="row gx-2">
-                <input class="form-control to-slug" name="id" type="hidden" value="<%= category._id%>" />
+                <input class="form-control" name="id" type="hidden" value="<%= category._id%>" />
                 <div class="col-sm-6 mb-3"><label class="form-label" for="start-date">Tên chuyên mục</label>
                     <input class="form-control to-slug" name="name" type="text" value="<%= category.name%>" placeholder="Tên chuyên mục" />
                     <label for="name" class="form-check-label mb-0 text-danger"></label>
@@ -42,7 +42,7 @@
                     <label class="form-label" for="time-zone">Hình ảnh</label>
                     <div class="d-flex mb-3 hover-actions-trigger align-items-center">
                         <div class="file-thumbnail">
-                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHeplers.getSlug(category.image) %>" alt="" />
+                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.getSlug(category.image) %>" alt="" />
                             <input class="form-control" name="image" value="<%= category.image %>" type="hidden" />
                         </div>
                         <div class="ms-3 flex-shrink-1 flex-grow-1">

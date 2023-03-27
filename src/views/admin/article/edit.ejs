@@ -1,0 +1,171 @@
+<div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
+    <h4 class="mb-1">Cập nhật bài viết <%= article.title%></h4>
+</div>
+<form action="/stv/article/edit" method="patch" data-ajax="true">
+    <div class="row g-0">
+        <div class="col-lg-8 pe-lg-2">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Thông tin chính</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row gx-2">
+                        <input class="form-control" name="id" type="hidden" value="<%= article._id%>" />
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Tiêu đề<span class="text-danger">*</span></label>
+                            <input class="form-control to-slug" name="title" type="text" value="<%= article.title%>" placeholder="Tiêu đề bài viết" />
+                            <label for="title" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Trích dẫn</label>
+                            <textarea class="form-control ckeditor" name="summary" rows="3" data-height="100"><%- article.summary%></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Url<span class="text-danger">*</span></label>
+                            <input class="form-control get-slug" name="slug" type="text" value="<%= article.slug%>" placeholder="Url bài viết" />
+                            <label for="slug" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-sm-9 mb-3-"></div>
+                        <div class="col-sm-6 mb-3">
+                            <label class="form-label">Chuyên mục chính<span class="text-danger">*</span></label>
+                            <select name="category" class="form-select">
+                                <%if(typeof (categories) !='undefined' && categories.length> 0){
+                                    for(var index = 0; index < categories.length; index ++){%>
+                                        <option value="<%= categories[index]._id%>"<%= typeof(article.category) != 'undefined' && article.category.toString() == categories[index]._id.toString() ? ' selected' : '' %>><%= categories[index].name%></option>
+                                    <%}
+                                 }%>
+                            </select>
+                            <label for="category" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                        <div class="col-sm-3 mb-3">
+                            <label class="form-label">Ảnh bài viết</label>
+                            <div class="d-flex mb-3 hover-actions-trigger align-items-center">
+                                <div class="file-thumbnail">
+                                    <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.getSlug(article.image) %>" alt="<%= article.title %>" />
+                                    <input class="form-control" name="image" value="<%= article.image %>" type="hidden" />
+                                </div>
+                                <div class="ms-3 flex-shrink-1 flex-grow-1">
+                                    <div class="hover-actions end-0 top-50 translate-middle-y">
+                                        <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none popup"
+                                            data-modal="media-modal" data-url="/stv/media" type="button"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Edit"
+                                            data-bs-original-title="Edit">
+                                            <img src="/admin/img/icons/edit-alt.svg" alt="" width="15">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-12">
+                                <div class="border-bottom border-dashed my-3"></div>
+                            </div> -->
+                        <div class="col-12">
+                            <label class="form-label">Nội dung<span class="text-danger">*</span></label>
+                            <textarea name="content" class="form-control ckeditor" data-height="300"><%- article.content.toString()%></textarea>
+                            <label for="content" class="form-check-label mb-0 text-danger"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Thông tin SEO</h5>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row gx-2">
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" id="IsIndex" name="isIndex" type="checkbox" value="1"
+                                    <%= article.isIndex ? 'checked' : ''%> />
+                                <label class="form-check-label" for="IsIndex">Google Index</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Tiêu đề SEO</label>
+                            <input class="form-control" name="metaTitle" type="text" value="<%= article.metaTitle%>" placeholder="Tiêu đề SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Mô tả SEO</label>
+                            <input class="form-control" name="metaDescription" type="text" value="<%= article.metaDescription%>" placeholder="Tiêu đề SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Từ khóa SEO</label>
+                            <input class="form-control" name="metaKeywords" type="text" value="<%= article.metaKeywords%>" placeholder="Từ khóa SEO" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Thẻ H1</label>
+                            <input class="form-control" name="h1Tag" type="text" value="<%= article.h1Tag%>" placeholder="Thẻ H1" />
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Canonical</label>
+                            <input class="form-control" name="canonical" type="text" value="<%= article.canonical%>" placeholder="Canonical" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 ps-lg-2">
+            <div class="sticky-sidebar">
+                <div class="card mb-lg-0">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin khác</h5>
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="mb-3">
+                            <label class="form-label">Chuyên mục khác</label>
+                            <%if(typeof (categories) !='undefined' && categories.length> 0){%>
+                                <div class="collapse show" style="max-height:300px;overflow:auto;">
+                                    <ul class="list-unstyled" style="padding-left: 4px;">
+                                        <%for(var index=0; index < categories.length; index ++){ let level='' ; const
+                                            levels=categories[index].level.split('/'); for(var i=0; i < levels.length; i++){
+                                                if(i> 0){
+                                                    level += '-';
+                                                }
+                                            }%>
+                                            <li>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" id="<%=categories[index]._id%>" name="subCategory"
+                                                        type="checkbox" value="<%=categories[index]._id%>"<%= typeof(article.subCategory) != 'undefined' && article.subCategory.includes(categories[index]._id) ? ' checked' : ''%> />
+                                                    <label class="form-check-label" for="<%=categories[index]._id%>">
+                                                        <%=level%><%=categories[index].name%>
+                                                    </label>
+                                                </div>
+                                            </li>
+                                            <%}%>
+                                    </ul>
+                                </div>
+                                <%}%>
+                        </div>
+                        <!-- <div class="mb-3">
+                            <label class="form-label" for="event-tags">Tags</label>
+                            <select class="form-select" name="tag" multiple="multiple">
+                                <option value="">Select tags...</option>
+                                <option>Concert</option>
+                                <option>New Year</option>
+                                <option>Party</option>
+                            </select>
+                        </div>
+                        <div class="border-bottom border-dashed my-3"></div>
+                        <h6>Listing Privacy</h6>
+                        <div class="mb-3 form-check"><input class="form-check-input" id="customRadio4" type="radio"
+                                name="listingPrivacy" checked="checked" /><label class="form-label mb-0"
+                                for="customRadio4"> <strong>Public page:</strong></label>
+                            <div class="form-text mt-0">Discoverable by anyone on Falcon, our distribution partners, and
+                                search engines.</div>
+                        </div>
+                        <div class="mb-3 form-check"><input class="form-check-input" id="customRadio5" type="radio"
+                                name="listingPrivacy" /><label class="form-label mb-0" for="customRadio5">
+                                <strong>Private page:</strong></label>
+                            <div class="form-text mt-0">Accessible only by people you specify. </div>
+                        </div>
+                        <div class="border-bottom border-dashed my-3"></div>
+                        <h6>Remaining Tickets</h6>
+                        <div class="form-check custom-checkbox mb-0"><input class="form-check-input" id="customRadio6"
+                                type="checkbox" /><label class="form-label mb-0" for="customRadio6">Show the number of
+                                remaining tickets. </label></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

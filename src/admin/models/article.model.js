@@ -7,12 +7,13 @@ module.exports = mongoose => {
                 trim: true,
                 unique: true
             },
+            titleLower: { type: String, trim: true, lowercase: true },
             summary: String,
             content: {
                 type: String,
                 required: true
             },
-            slug: { type: String, required: true, unique: true },
+            slug: { type: String, trim: true, lowercase: true, required: true, unique: true },
             category: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Category'
@@ -50,6 +51,8 @@ module.exports = mongoose => {
             updatedAt: Date,
             draftedBy: String,
             draftedAt: Date,
+            recoverDraftedBy: String,
+            recoverDraftedAt: Date,
             publishedBy: String,
             publishedAt: Date,
             republishedBy: String,
@@ -60,7 +63,15 @@ module.exports = mongoose => {
             timestamps: false
         });
 
-        articleSchema.index({ title: 'text', summary: 'text', content: 'text', slug: 'text' });
+    articleSchema.index({ title: 'text', titleLower : 'text', summary: 'text', content: 'text', slug: 'text' });
+
+    articleSchema.pre('save', async function (next) {
+        if (!this.isModified('title') || !this.isNew) return next();
+
+        this.titleLower = this.title.toLowerCase();
+
+        next();
+    });
 
     return mongoose.model('Article', articleSchema);
 }

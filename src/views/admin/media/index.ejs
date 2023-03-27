@@ -58,7 +58,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xl">
                                                 <img class="rounded-circle"
-                                                    src="<%= stringHeplers.getSlug(data.medias[index].path) %>"
+                                                    src="<%= stringHelpers.getSlug(data.medias[index].path) %>"
                                                     alt="<%=data.medias[index].name%>" />
                                             </div>
                                             <div class="ms-2">
@@ -67,7 +67,7 @@
                                         </div>
                                     </td>
                                     <td class="align-middle text-nowrap">
-                                        <%= stringHeplers.getFileSize(data.medias[index].size) %>
+                                        <%= stringHelpers.getFileSize(data.medias[index].size) %>
                                     </td>
                                     <td class="align-middle text-nowrap">
                                         <%= data.medias[index].contentType %>

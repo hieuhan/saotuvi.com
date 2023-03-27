@@ -1,7 +1,7 @@
-<%currentPage = currentPage + 1;%><%if(pages> 0){%>
+<%if(pages> 0){%>
   <div class="card-footer border-top d-flex justify-content-center">
     <%if(currentPage>1){%>
-      <a class="btn btn-falcon-default btn-sm me-2" type="button" disabled="disabled" data-bs-toggle="tooltip"
+      <a href="javascript:void(0)" data-page="<%= (Number(currentPage) - 1)%>" class="btn btn-falcon-default btn-sm me-2 pag" data-bs-toggle="tooltip"
         data-bs-placement="top" aria-label="Prev" data-bs-original-title="Trang trước">
         <svg class="svg-inline--fa fa-chevron-left fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas"
           data-icon="chevron-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg="">
@@ -13,7 +13,7 @@
       <%}%>
         <% var i=(Number(currentPage)> 3 ? Number(currentPage) - 2 : 1) %>
           <% if(i !==1) { %>
-            <span class="btn btn-sm btn-falcon-default me-2" href="#!">
+            <span class="btn btn-sm btn-falcon-default me-2">
               <svg class="svg-inline--fa fa-ellipsis-h fa-w-16" aria-hidden="true" focusable="false" data-prefix="fas"
                 data-icon="ellipsis-h" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
                 data-fa-i2svg="">
@@ -24,16 +24,16 @@
             </span>
             <% } %>
               <% for(; i <=(Number(currentPage) + 2) && i <=pages; i++) { if(i==currentPage) { %>
-                <a class="btn btn-sm btn-falcon-default text-primary me-2" href="#!">
+                <a href="javascript:void(0)" data-page="<%= i%>" class="btn btn-sm btn-falcon-default text-primary me-2 pag">
                   <%= i %>
                 </a>
                 <%} else {%>
-                  <a class="btn btn-sm btn-falcon-default me-2" href="#!">
+                  <a href="javascript:void(0)" data-page="<%= i%>" class="btn btn-sm btn-falcon-default me-2 pag">
                     <%= i %>
                   </a>
                   <%}%>
                     <% if (i==Number(currentPage) + 2 && i < pages) { %>
-                      <span class="btn btn-sm btn-falcon-default me-2" href="#!">
+                      <span class="btn btn-sm btn-falcon-default me-2">
                         <svg class="svg-inline--fa fa-ellipsis-h fa-w-16" aria-hidden="true" focusable="false"
                           data-prefix="fas" data-icon="ellipsis-h" role="img" xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 512 512" data-fa-i2svg="">
@@ -44,7 +44,7 @@
                       </span>
                       <% } }
                         if(currentPage < pages) { %>
-                          <a class="btn btn-falcon-default btn-sm" type="button" data-bs-toggle="tooltip"
+                          <a href="javascript:void(0)" data-page="<%= (Number(currentPage)  + 1)%>" class="btn btn-falcon-default btn-sm pag" data-bs-toggle="tooltip"
                             data-bs-placement="top" aria-label="Next" data-bs-original-title="Trang tiếp theo">
                             <svg class="svg-inline--fa fa-chevron-right fa-w-10" aria-hidden="true" focusable="false"
                               data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg"

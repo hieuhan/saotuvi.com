@@ -12,16 +12,16 @@
                     <div class="row gx-2">
                         <div class="col-12 mb-3">
                             <label class="form-label">Tiêu đề<span class="text-danger">*</span></label>
-                            <input class="form-control" name="title" type="text" placeholder="Tiêu đề bài viết" />
+                            <input class="form-control to-slug" name="title" type="text" placeholder="Tiêu đề bài viết" />
                             <label for="title" class="form-check-label mb-0 text-danger"></label>
                         </div>
                         <div class="col-12 mb-3">
                             <label class="form-label">Trích dẫn</label>
-                            <textarea class="form-control" name="summary" rows="3"></textarea>
+                            <textarea class="form-control ckeditor" name="summary" data-height="100" rows="3"></textarea>
                         </div>
                         <div class="col-12 mb-3">
                             <label class="form-label">Url<span class="text-danger">*</span></label>
-                            <input class="form-control" name="slug" type="text" placeholder="Url bài viết" />
+                            <input class="form-control get-slug" name="slug" type="text" placeholder="Url bài viết" />
                             <label for="slug" class="form-check-label mb-0 text-danger"></label>
                         </div>
                         <div class="col-sm-9 mb-3-"></div>
@@ -60,7 +60,7 @@
                             </div> -->
                         <div class="col-12">
                             <label class="form-label">Nội dung<span class="text-danger">*</span></label>
-                            <textarea name="content" class="form-control tinymce" rows="6"></textarea>
+                            <textarea name="content" class="form-control ckeditor" data-height="300"></textarea>
                             <label for="content" class="form-check-label mb-0 text-danger"></label>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                     <div class="row gx-2">
                         <div class="col-12">
                             <div class="form-check">
-                                <input class="form-check-input" id="IsIndex" type="checkbox" value="true"
+                                <input class="form-check-input" id="IsIndex" name="isIndex" type="checkbox" value="1"
                                     checked="checked" />
                                 <label class="form-check-label" for="IsIndex">Google Index</label>
                             </div>
@@ -126,8 +126,7 @@
                                                     <input class="form-check-input" id="<%=data[index]._id%>" name="subCategory"
                                                         type="checkbox" value="<%=data[index]._id%>" />
                                                     <label class="form-check-label" for="<%=data[index]._id%>">
-                                                        <%=level%>
-                                                            <%=data[index].name%>
+                                                        <%=level%><%=data[index].name%>
                                                     </label>
                                                 </div>
                                             </li>

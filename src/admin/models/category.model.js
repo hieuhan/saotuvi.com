@@ -7,8 +7,9 @@ module.exports = mongoose => {
                 trim: true,
                 unique: true
             },
+            nameLower: { type: String, trim: true, lowercase: true, required: true },
             description: String,
-            slug: { type: String, required: true, unique: true },
+            slug: { type: String, trim: true, lowercase: true, required: true, unique: true },
             parent: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Category',
@@ -41,7 +42,15 @@ module.exports = mongoose => {
             timestamps: false
         });
 
-    categorySchema.index({ name: 'text', slug: 'text', treeOrder: 'text' });
+    categorySchema.index({ name: 'text', nameLower : 'text', slug: 'text', treeOrder: 'text' });
+
+    categorySchema.pre('save', async function (next) {
+        if (!this.isModified('name')  || !this.isNew) return next();
+
+        this.nameLower = this.name.toLowerCase();
+
+        next();
+    });
 
     return mongoose.model('Category', categorySchema);
 }

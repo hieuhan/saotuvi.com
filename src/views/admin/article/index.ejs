@@ -40,7 +40,7 @@
                             <div class="border-bottom border-200 my-3"></div>
                             <div class="d-flex align-items-center justify-content-end my-3">
                                 <div>
-                                    <button data-url="/stv/article/create" data-method="PATCH" data-modal-size="modal-xl" data-bs-toggle="modal" data-bs-target="#modal"
+                                    <button data-url="/stv/article/create" data-method="PATCH" data-modal-size="modal-xl" data-bs-target="#modal"
                                         class="btn btn-falcon-success btn-sm popup" type="button">
                                         <span class="fas fa-plus" data-fa-transform="shrink-3 down-2"></span>
                                         <span class="ms-1">Tạo mới</span>
@@ -49,6 +49,8 @@
                             </div>
                         </div>
                         <div id="table-result">
+                            <%if(typeof (articles) !='undefined' && typeof (articles.list) !='undefined' &&
+                            articles.list.length> 0){%>
                             <div class="card-body p-0">
                                 <div class="table-responsive scrollbar">
                                     <table class="table mb-0">
@@ -60,54 +62,54 @@
                                                 <th class="align-middle">Url</th>
                                                 <th class="align-middle">Nháp</th>
                                                 <th class="align-middle white-space-nowrap pe-3">Ngày tạo</th>
-                                                <!-- <th class="align-middle white-space-nowrap pe-3">Ngày xóa</th> -->
-                                                <th class="text-end" scope="col">Hành động</th>
+                                                <th class="text-end" scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <%if(typeof (data) !='undefined' && typeof (data.articles.data) !='undefined' &&
-                                                data.articles.data.length> 0) { for(var i=0; i<data.articles.data.length; i++){
-                                                    const isDraft = typeof (data.articles.data[i].isDraft) !='undefined' &&
-                                                    data.articles.data[i].isDraft %>
+                                            <%for(var i=0; i<articles.list.length; i++){
+                                                    const isDraft = typeof (articles.list[i].isDraft) !='undefined' &&
+                                                    articles.list[i].isDraft %>
                                                     <tr>
                                                         <th class="align-middle">
-                                                            <%= data.articles.data[i].title %>
+                                                            <%= articles.list[i].title %>
                                                         </th>
                                                         <td class="align-middle">
-                                                            <%= data.articles.data[i].subCategory ? data.articles.data[i].subCategory.map(c => c.name).join(', ') : '' %>
+                                                            <%= articles.list[i].subCategory ? articles.list[i].subCategory.map(c => c.name).join(', ') : '' %>
                                                         </td>
                                                         <td class="align-middle">
-                                                            <%if(typeof (data.articles.data[i].image) !='undefined' &&
-                                                                data.articles.data[i].image.trim().length> 0){%>
+                                                            <%if(typeof (articles.list[i].image) !='undefined' &&
+                                                                articles.list[i].image.trim().length> 0){%>
                                                                 <div class="file-thumbnail">
                                                                     <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
-                                                                        src="<%= stringHeplers.getSlug(data.articles.data[i].image) %>"
+                                                                        src="<%= stringHelpers.getSlug(articles.list[i].image) %>"
                                                                         alt="" />
                                                                 </div>
                                                                 <%} %>
                                                         </td>
                                                         <td class="align-middle">
-                                                            <a href="<%= stringHeplers.getSlug(data.articles.data[i].slug) %>"
-                                                                title="<%= data.articles.data[i].name %>" target="_blank">
-                                                                <%= stringHeplers.getFullSlug(data.articles.data[i].slug) %>
+                                                            <a href="<%= stringHelpers.getSlug(articles.list[i].slug) %>"
+                                                                title="<%= articles.list[i].name %>" target="_blank">
+                                                                <%= stringHelpers.getFullSlug(articles.list[i].slug) %>
                                                             </a>
                                                         </td>
                                                         <td class="align-middle">
                                                             <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox"
-                                                                    <%=isDraft ? `checked=${
-                                                                    data.articles.data[i].isDraft }` : '' %> disabled="" />
+                                                                <%if(isDraft){%>
+                                                                    <input class="form-check-input draft" type="checkbox" checked value="1" data-ajax="true" data-url="/stv/article/recover/<%= articles.list[i]._id %>" data-method="PATCH" />
+                                                                <%} else {%>
+                                                                    <input class="form-check-input draft" type="checkbox"  value="1" data-ajax="true" data-url="/stv/article/draft/<%= articles.list[i]._id %>" data-method="PATCH" />
+                                                                <%}%>
                                                             </div>
                                                         </td>
                                                         <td class="align-middle white-space-nowrap text-end pe-3">
-                                                            <%= data.articles.data[i].createdAt.toLocaleString('en-GB', {
+                                                            <%= articles.list[i].createdAt.toLocaleString('en-GB', {
                                                                 hour12: false, }) %>
                                                         </td>
                                                         <td class="text-end">
                                                             <div>
                                                                 <button
-                                                                    data-url="/stv/article/edit/<%= data.articles.data[i]._id %>"
-                                                                    data-method="PUT" class="btn btn-link p-0 popup"
+                                                                    data-url="/stv/article/edit/<%= articles.list[i]._id %>"
+                                                                    data-method="PUT" data-modal-size="modal-xl" data-bs-target="#modal" class="btn btn-link p-0 popup"
                                                                     type="button" title="Sửa">
                                                                     <svg class="svg-inline--fa fa-edit fa-w-18 text-500"
                                                                         aria-hidden="true" focusable="false"
@@ -119,52 +121,16 @@
                                                                         </path>
                                                                     </svg>
                                                                 </button>
-                                                                <%if(isDraft){%>
-                                                                    <button class="btn btn-link p-0 ms-2" type="button"
-                                                                        data-ajax="true"
-                                                                        data-url="/stv/article/recover/<%= data.articles.data[i]._id %>"
-                                                                        data-method="PATCH"
-                                                                        data-bind="/stv/article/binddata"
-                                                                        title="Phục hồi dữ liệu">
-                                                                        <svg class="svg-inline--fa fa-undo-alt fa-w-14 text-500"
-                                                                            aria-hidden="true" focusable="false"
-                                                                            data-prefix="fas" data-icon="undo-alt"
-                                                                            role="img"
-                                                                            xmlns="http://www.w3.org/2000/svg"
-                                                                            viewBox="0 0 512 512" data-fa-i2svg="">
-                                                                            <path fill="currentColor"
-                                                                                d="M255.545 8c-66.269.119-126.438 26.233-170.86 68.685L48.971 40.971C33.851 25.851 8 36.559 8 57.941V192c0 13.255 10.745 24 24 24h134.059c21.382 0 32.09-25.851 16.971-40.971l-41.75-41.75c30.864-28.899 70.801-44.907 113.23-45.273 92.398-.798 170.283 73.977 169.484 169.442C423.236 348.009 349.816 424 256 424c-41.127 0-79.997-14.678-110.63-41.556-4.743-4.161-11.906-3.908-16.368.553L89.34 422.659c-4.872 4.872-4.631 12.815.482 17.433C133.798 479.813 192.074 504 256 504c136.966 0 247.999-111.033 248-247.998C504.001 119.193 392.354 7.755 255.545 8z">
-                                                                            </path>
-                                                                        </svg>
-                                                                    </button>
-                                                                    <%}else{%>
-                                                                        <button class="btn btn-link p-0 ms-2"
-                                                                            type="button" data-ajax="true"
-                                                                            data-url="/stv/article/delete/<%= data.articles.data[i]._id %>"
-                                                                            data-method="PATCH"
-                                                                            data-bind="/stv/article/binddata"
-                                                                            title="Xóa">
-                                                                            <svg class="svg-inline--fa fa-trash-alt fa-w-14 text-500"
-                                                                                aria-hidden="true" focusable="false"
-                                                                                data-prefix="fas" data-icon="trash-alt"
-                                                                                role="img"
-                                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                                viewBox="0 0 448 512" data-fa-i2svg="">
-                                                                                <path fill="currentColor"
-                                                                                    d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z">
-                                                                                </path>
-                                                                            </svg>
-                                                                        </button>
-                                                                        <%}%>
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <%} }%>
+                                                    <%}%>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                            <%- include('../partials/pagination', {pages: data.articles.pages, currentPage: data.articles.currentPage}) %>
+                                <%- include('../partials/pagination', { originalUrl: request.originalUrl, pages: articles.pages, currentPage: articles.currentPage}) %>
+                            <%}%>
                         </div>
                     </div>
                 </div>

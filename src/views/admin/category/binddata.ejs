@@ -28,14 +28,14 @@
                             <%if(typeof (data[i].image) !='undefined' && data[i].image.trim().length> 0){%>
                                 <div class="file-thumbnail">
                                     <img class="border h-100 w-100 fit-cover rounded-2 image-cover"
-                                        src="<%= stringHeplers.getSlug(data[i].image) %>" alt="" />
+                                        src="<%= stringHelpers.getSlug(data[i].image) %>" alt="" />
                                 </div>
                                 <%} %>
                         </td>
                         <td class="align-middle">
-                            <a href="<%= stringHeplers.getSlug(data[i].slug) %>" title="<%= data[i].name %>"
+                            <a href="<%= stringHelpers.getSlug(data[i].slug) %>" title="<%= data[i].name %>"
                                 target="_blank">
-                                <%= stringHeplers.getFullSlug(data[i].slug) %>
+                                <%= stringHelpers.getFullSlug(data[i].slug) %>
                             </a>
                         </td>
                         <td class="align-middle">

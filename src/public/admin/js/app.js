@@ -5,11 +5,12 @@ var app = {
     events: function () {
         $(document).on('click', '.popup', function (e) {
             e.preventDefault();
+            e.stopImmediatePropagation();
             try {
-                var self = $(this), urlRequest = self.data('url') || '', 
-                modal = $(`#${ self.data('modal') || 'modal' }`), modalDialog = modal.find('.modal-dialog').first(), 
-                modalSize = self.data('modal-size') || 'modal-lg';
-                modalDialog.attr('class', `modal-dialog ${ modalSize } modal-dialog-centered`);
+                var self = $(this), urlRequest = self.data('url') || '',
+                    modal = $(`#${self.data('modal') || 'modal'}`), modalDialog = modal.find('.modal-dialog').first(),
+                    modalSize = self.data('modal-size') || 'modal-lg';
+                modalDialog.attr('class', `modal-dialog ${modalSize} modal-dialog-centered`);
 
                 if (urlRequest.trim().length > 0) {
                     app.fetchData({
@@ -19,16 +20,7 @@ var app = {
                     }).then((response) => {
                         const modalContent = modal.find('.modal-body').first();
                         modalContent.html(response);
-                        setTimeout(() => {
-                            tinymce.init({
-                                selector:   "textarea",
-                                width:      '100%',
-                                height:     270,
-                                plugins:    "link",
-                                statusbar:  false,
-                                toolbar:    "link"
-                            });
-                        }, 200);
+                        app.initCkEditor('.ckeditor');
                         modal.modal('show');
                     });
                 }
@@ -44,19 +36,19 @@ var app = {
                 data: form.serialize(),
                 dataType: 'json',
                 beforeSend: function () {
-                    form.find('label.form-check-label').text('');
+                    form.find('label.form-check-label.text-danger').text('').hide();
                 }
             }).done(function (response) {
                 if (!response.success) {
                     if (response.error) {
                         $.each(response.error, function (index, item) {
-                            form.find(`label[for="${item.param}"]`).first().text(item.msg);
+                            form.find(`label[for="${item.param}"]`).first().text(item.msg).show();
                         });
                     }
                 } else {
                     $('#modal').modal('toggle');
                     alert('Lưu dữ liệu thành công.');
-                    if(response.cb){
+                    if (response.cb) {
                         app.bindTableData(response.cb)
                     }
                 }
@@ -76,7 +68,7 @@ var app = {
                 }
             }).done(function (response) {
                 if (response.length > 0) {
-                    $(`#${ destination }`).html(response);
+                    $(`#${destination}`).html(response);
                 }
             });
 
@@ -92,11 +84,11 @@ var app = {
 
                     for (var i = 0; i < files.length; i++) {
                         var filename = files[i].name,
-                        fileSize = files[i].size;
+                            fileSize = files[i].size;
 
                         var size = Math.round((fileSize / 1024));
 
-                        if (size > 20*1024){
+                        if (size > 20 * 1024) {
                             alert('File ảnh hợp lệ có dung lượng không vượt quá 20MB.');
                             return;
                         }
@@ -109,7 +101,7 @@ var app = {
                         if (!isAllowed) {
                             alert('Vui lòng chọn file ảnh (.jpg, .jpeg, .png, .gif, .svg)');
                             return;
-                        } 
+                        }
                     }
 
                     $.ajax({
@@ -135,7 +127,7 @@ var app = {
                         },
                         success: function (response) {
 
-                            if(response.cb){
+                            if (response.cb) {
                                 app.bindTableData(response.cb, 'table-media-result')
                             }
                             self.val('');
@@ -156,12 +148,12 @@ var app = {
         $(document).on('click', '.choose-image', function (e) {
             try {
                 var self = $(this), name = self.data('name') || '', path = self.data('path') || '',
-                inputImageCover = $('#modal').find('.image-cover').first()
+                    inputImageCover = $('#modal').find('.image-cover').first()
                 inputPath = $('#modal').find('input[name="image"]').first();
-                
-                if(inputPath.length > 0 && path.trim().length > 0){
+
+                if (inputPath.length > 0 && path.trim().length > 0) {
                     inputPath.val(path);
-                    inputImageCover.attr('src', path.startsWith('/') ? path : `/${ path }`);
+                    inputImageCover.attr('src', path.startsWith('/') ? path : `/${path}`);
                     $('#media-modal').modal('toggle');
                 }
             } catch (error) {
@@ -171,21 +163,49 @@ var app = {
         $(document).on('click', 'button[data-ajax="true"]', function (e) {
             try {
                 var self = $(this), urlRequest = self.data('url') || '',
-                method = self.data('method') || 'POST', dataType = self.data('type') || 'json',
-                bindDataUrl = self.data('bind') || '';
+                    method = self.data('method') || 'POST', dataType = self.data('type') || 'json',
+                    bindDataUrl = self.data('bind') || '';
 
-                if(urlRequest.trim().length > 0){
+                if (urlRequest.trim().length > 0) {
                     app.fetchData({
                         type: method,
                         url: urlRequest,
                         dataType: dataType
                     }).then((response) => {
-                        if(response.success){
-                            if(bindDataUrl.trim().length > 0){
+                        if (response.success) {
+                            if (bindDataUrl.trim().length > 0) {
                                 app.bindTableData(bindDataUrl);
                             }
                         }
-                        else if(response.message){
+                        else if (response.message) {
+                            alert(response.message);
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        $(document).on('change', 'input[type="checkbox"][data-ajax="true"]', function (e) {
+            try {
+                var self = $(this), urlRequest = self.data('url') || '',
+                method = self.data('method') || 'POST', dataType = self.data('type') || 'json',
+                    confirmText = self.is(':checked') ? 'Xác nhận chuyển thành dữ liệu nháp ?' : 'Xác nhận bỏ dữ liệu nháp ?';
+                if(urlRequest.trim().length > 0 && confirm(confirmText)){
+                    app.fetchData({
+                        type: method,
+                        url: urlRequest,
+                        dataType: dataType
+                    }).then((response) => {
+                        if (response.success) {
+                            if (response.dataUrl.trim().length > 0) {
+                                app.bindTableData(response.dataUrl);
+                            }
+                            if (response.message) {
+                                alert(response.message);
+                            }
+                        }
+                        else if (response.message) {
                             alert(response.message);
                         }
                     });
@@ -197,6 +217,20 @@ var app = {
         $(document).on('change keyup paste', '.to-slug', function (e) {
             try {
                 $('.get-slug').val(app.toSlug($(this).val()))
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        $(document).on('click', '.pag', function (e) {
+            e.preventDefault();
+            try {
+                var self = $(this), page = self.data('page') || '';
+                if (page != '') {
+                    const newUrl = app.updatePageUrl(page);
+                    if (newUrl.length > 0){
+                        window.location.href = newUrl;
+                    }  
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -241,6 +275,57 @@ var app = {
             .catch((error) => {
                 console.error(error)
             })
+    },
+    initCkEditor: (className) => {
+        document.querySelectorAll(className).forEach(element => {
+            ClassicEditor
+                .create(element)
+                .then(editor => {
+                    const minHeight = $(element).attr('data-height') || 0;
+                    if (minHeight > 0) {
+                        editor.editing.view.change(writer => {
+                            writer.setStyle('min-height', `${minHeight}px`, editor.editing.view.document.getRoot());
+                        });
+                    }
+                    editor.model.document.on('change:data', () => {
+                        element.value = editor.getData();
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+        // ClassicEditor
+        //     .create(document.querySelector(element))
+        //     .then(editor => {
+        //         editor.editing.view.change(writer => {
+        //             writer.setStyle('min-height', `${300}px`, editor.editing.view.document.getRoot());
+        //         });
+        //         editor.model.document.on('change:data', () => {
+        //             document.querySelector(element).value = editor.getData();
+        //         });
+        //         window.editor = editor;
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
+    },
+    updatePageUrl: (currentPage) => {
+        let newUrl = '';
+        try {
+            var originalUrl = window.location.href;
+            if (originalUrl.indexOf('page=') !== -1) {
+                newUrl = originalUrl.replace(/page=[^&]+/, 'page=' + currentPage);
+            } else if (originalUrl.indexOf("?") === -1) {
+                newUrl = originalUrl + '?page=' + currentPage;
+            } else {
+                newUrl = originalUrl + '&page=' + currentPage;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
+        return newUrl;
     },
     addParam: function (currentUrl, key, val) {
         var url = new URL(currentUrl);

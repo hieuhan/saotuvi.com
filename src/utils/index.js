@@ -1,3 +1,3 @@
 module.exports = (app) => {
-    app.locals.stringHeplers = require('./string.util');
+    app.locals.stringHelpers = require('./string.util');
 };

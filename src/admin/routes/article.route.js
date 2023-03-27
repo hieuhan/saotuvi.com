@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const articleController = require('../controllers/article');
-//const menuCreateValidator = require('../validators/menu/create');
-//const menuEditValidator = require('../validators/menu/edit');
+const articleCreateValidator = require('../validators/article/create');
+const articleEditValidator = require('../validators/article/edit');
 
 router.get('/', articleController.index);
-//router.post('/binddata', menuController.binddata);
-router.get('/create', articleController.create).put('/create', articleController.createPost);
+router.post('/binddata', articleController.binddata);
+router.get('/create', articleController.create).put('/create', articleCreateValidator, articleController.createPost);
+router.get('/edit/:id', articleController.edit).patch('/edit', articleEditValidator, articleController.editPost);
+router.patch('/draft/:id', articleController.draft);
+router.patch('/recover/:id', articleController.recover);
 
 module.exports = router;

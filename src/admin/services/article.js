@@ -25,7 +25,7 @@ class ArticleService {
             }
 
             if (category.trim().length > 0) {
-                query['category'] = category;
+                query['subCategory'] = { '$in': [`${ category }`] };
             }
 
             if (isDraft == 1) {
@@ -55,7 +55,7 @@ class ArticleService {
                 Article.countDocuments(query)
             ]);
 
-            return { data: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
+            return { list: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
             console.error(`ArticleService::getList::${error}`);
             return Promise.reject(error);
@@ -64,6 +64,7 @@ class ArticleService {
 
     static insert = async (article) => {
         try {
+            console.log(article)
             return await Article.create(article);
         } catch (error) {
             console.error(`:::ArticleService.insert:::${error}`);
@@ -80,25 +81,25 @@ class ArticleService {
         }
     }
 
-    static delete = async (id, deletedBy) => {
+    static draft = async (id, draftedBy) => {
         try {
-            return await Article.updateOne({ _id: id, isDeleted: false }, {
-                isDeleted: true,
-                deletedBy: deletedBy,
-                deletedAt: new Date()
+            return await Article.updateOne({ _id: id, isDraft: false }, {
+                isDraft: true,
+                draftedBy: draftedBy,
+                draftedAt: new Date()
             })
         } catch (error) {
-            console.error(`ArticleService::delete::${error}`);
+            console.error(`ArticleService::draft::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static recover = async (id, recoverDeletedBy) => {
+    static recover = async (id, recoverDraftedBy) => {
         try {
-            return await Article.updateOne({ _id: id, isDeleted: true }, {
-                isDeleted: false,
-                recoverDeletedBy: recoverDeletedBy,
-                recoverDeletedAt: new Date()
+            return await Article.updateOne({ _id: id, isDraft: true }, {
+                isDraft: false,
+                recoverDraftedBy: recoverDraftedBy,
+                recoverDraftedAt: new Date()
             })
         } catch (error) {
             console.error(`ArticleService::recover::${error}`);
