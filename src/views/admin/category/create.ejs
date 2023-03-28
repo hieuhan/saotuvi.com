@@ -32,11 +32,11 @@
                     <label class="form-label">Thứ tự hiển thị</label>
                     <input class="form-control" name="displayOrder" type="number" placeholder="Thứ tự hiển thị" />
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <label class="form-label" for="time-zone">Hình ảnh</label>
                     <div class="d-flex mb-3 hover-actions-trigger align-items-center">
                         <div class="file-thumbnail">
-                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="" alt="" />
+                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.NOIMAGE_PATH%>" alt="thumb" />
                             <input class="form-control" name="image" type="hidden" />
                         </div>
                         <div class="ms-3 flex-shrink-1 flex-grow-1">
@@ -50,6 +50,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-3"></div>
                 <div class="col-12">
                     <div class="border-bottom border-dashed my-3"></div>
                 </div>

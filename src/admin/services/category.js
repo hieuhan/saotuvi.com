@@ -67,10 +67,8 @@ class CategoryService {
                 level: 1,
                 treeOrder: 1,
                 displayOrder: 1,
-                isDeleted: 1,
-                createdAt: 1,
-                deletedAt: 1,
-                deletedBy: 1
+                isDraft: 1,
+                createdAt: 1
             }).populate('parent', '_id name')
                 //.skip(page * (limit - 1))
                 //.limit(limit)
@@ -81,6 +79,41 @@ class CategoryService {
             return categories;
         } catch (error) {
             console.error(`CategoryService::getList::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static getParents = async ({
+        id = '',
+        level = ''
+    }) => {
+        try {
+            const query = {};
+
+            query['level'] = { $exists: true };
+            query['$expr'] = { $lte: [{ $strLenCP: '$level' }, level.toString().length] };
+            query['_id'] = { $ne: id };
+
+            const menus = await Category.find(query, {
+                name: 1,
+                description: 1,
+                slug: 1,
+                image: 1,
+                parent: 1,
+                parentSlug: 1,
+                level: 1,
+                treeOrder: 1,
+                displayOrder: 1,
+                isDraft: 1,
+                createdAt: 1
+            })
+                .sort({
+                    treeOrder: 'asc'
+                });
+
+            return menus;
+        } catch (error) {
+            console.error(`CategoryService::getParents::${error}`);
             return Promise.reject(error);
         }
     }
@@ -148,28 +181,28 @@ class CategoryService {
         }
     }
 
-    static deleteCategory = async (id, deletedBy) => {
+    static draft = async (id, draftedBy) => {
         try {
-            return await Category.updateOne({ _id: id, isDeleted: false }, {
-                isDeleted: true,
-                deletedBy: deletedBy,
-                deletedAt: new Date()
+            return await Category.updateOne({ _id: id, isDraft: false }, {
+                isDraft: true,
+                draftedBy: draftedBy,
+                draftedAt: new Date()
             })
         } catch (error) {
-            console.error(`CategoryService::deleteCategory::${error}`);
+            console.error(`CategoryService::draft::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static recoverDeleteCategory = async (id, recoverDeletedBy) => {
+    static recover = async (id, recoverDraftedBy) => {
         try {
-            return await Category.updateOne({ _id: id, isDeleted: true }, {
-                isDeleted: false,
-                recoverDeletedBy: recoverDeletedBy,
-                recoverDeletedAt: new Date()
+            return await Category.updateOne({ _id: id, isDraft: true }, {
+                isDraft: false,
+                recoverDraftedBy: recoverDraftedBy,
+                recoverDraftedAt: new Date()
             })
         } catch (error) {
-            console.error(`CategoryService::recoverDeleteCategory::${error}`);
+            console.error(`CategoryService::recover::${error}`);
             return Promise.reject(error);
         }
     }

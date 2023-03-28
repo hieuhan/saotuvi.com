@@ -5,7 +5,7 @@ module.exports = mongoose => {
             required: true,
             trim: true
         },
-        nameLower: { type: String, trim: true, lowercase: true, required: true },
+        nameLower: { type: String, trim: true, lowercase: true },
         description: String,
         slug: String,
         position:

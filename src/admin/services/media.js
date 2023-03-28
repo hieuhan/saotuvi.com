@@ -26,11 +26,13 @@ class MediaService {
                     .sort({
                         createdAt: 'desc'
                     })
-                    .skip(page * (limit - 1))
+                    .skip(page > 0 ? ((page - 1) * limit) : 0)
                     .limit(limit),
 
                 Media.countDocuments(query)
             ]);
+
+            page = page <= 0 ? 1 : page;
 
             return { medias: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
@@ -39,16 +41,16 @@ class MediaService {
         }
     }
 
-    static putMedia = async (media) => {
+    static insert = async (media) => {
         try {
             return await Media.create(media);
         } catch (error) {
-            console.error(`MediaService::putMedia::${error}`);
+            console.error(`MediaService::insert::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static patchMedia = async (media) => {
+    static update = async (media) => {
         try {
             return await Media.updateOne({
                 _id: media.id
@@ -62,7 +64,7 @@ class MediaService {
                 updatedAt: new Date()
             });
         } catch (error) {
-            console.error(`MediaService::patchMedia::${error}`);
+            console.error(`MediaService::update::${error}`);
             return Promise.reject(error);
         }
     }

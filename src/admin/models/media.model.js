@@ -14,9 +14,11 @@ module.exports = mongoose => {
         content: String,
         size: Number,
         contentType: String,
-        isDeleted: { type: Boolean, default: false },
-        deletedBy: String,
-        deletedAt: Date,
+        isDraft: { type: Boolean, default: false },
+        draftedBy: String,
+        draftedAt: Date,
+        recoverDraftedBy: String,
+        recoverDraftedAt: Date,
         createdBy: String,
         createdAt: { type: Date, default: Date.now },
         updatedBy: String,
@@ -27,7 +29,7 @@ module.exports = mongoose => {
             timestamps: false
         });
 
-        mediaSchema.index({ name: 'text', path: 'text' });
+    mediaSchema.index({ name: 'text', path: 'text' });
 
     return mongoose.model('Media', mediaSchema);
 }

@@ -51,13 +51,5 @@ module.exports = mongoose => {
         next();
     });
 
-    // Set passwordChangedAt field to the current time when the user change the password
-    // userSchema.pre('save', function (next) {
-    //     if (!this.isModified('password') || this.isNew) return next();
-
-    //     this.passwordChangedAt = Date.now() - 1000;
-    //     next();
-    // });
-
     return mongoose.model('User', userSchema);
 }

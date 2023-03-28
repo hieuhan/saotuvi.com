@@ -90,16 +90,20 @@ module.exports.edit = async (request, response, next) => {
             return next(new Error('Không tìm thấy menu phù hợp.'));
         }
 
+        const menu = await MenuService.getById(id);
+
+        if(!menu){
+            return next(new Error('Không tìm thấy menu phù hợp.'));
+        }
+
         const data = await Promise.all([
-            MenuService.getById(id),
             CategoryService.getList({
                 id: ''
-            })
+            }),
+            MenuService.getParents({ id: menu._id, level: menu.level })
         ]);
 
-        const parents = await MenuService.getParents({ id: data[0]._id, level: data[0].level });
-
-        response.render('admin/menu/edit', { parents: parents, menu: data[0], categories: data[1], layout: './admin/layouts/modal' });
+        response.render('admin/menu/edit', { menu: menu, categories: data[0], parents: data[1], layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -127,8 +131,6 @@ module.exports.editPost = async (request, response, next) => {
         }
 
         menu.nameLower = menu.name.toLowerCase();
-
-        console.log(menu)
 
         const menuFind = await MenuService.getById(id);
 

@@ -7,7 +7,7 @@ module.exports = mongoose => {
                 trim: true,
                 unique: true
             },
-            nameLower: { type: String, trim: true, lowercase: true, required: true },
+            nameLower: { type: String, trim: true, lowercase: true },
             description: String,
             slug: { type: String, trim: true, lowercase: true, required: true, unique: true },
             parent: {
@@ -27,15 +27,15 @@ module.exports = mongoose => {
             h1Tag: String,
             canonical: String,
             isIndex: { type: Boolean, default: true },
-            isDeleted: { type: Boolean, default: false },
+            isDraft: { type: Boolean, default: true },
             createdBy: String,
             createdAt: { type: Date, default: Date.now },
             updatedBy: String,
             updatedAt: Date,
-            deletedBy: String,
-            deletedAt: Date,
-            recoverDeletedBy: String,
-            recoverDeletedAt: Date
+            draftedBy: String,
+            draftedAt: Date,
+            recoverDraftedBy: String,
+            recoverDraftedAt: Date
         },
         {
             collection: 'categories',

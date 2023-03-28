@@ -4,14 +4,12 @@ const MediaService = require('../services/media');
 module.exports.index = async (request, response, next) => {
     try {
         //await Media.deleteMany();
-        let { keywords, page, limit } = request.params;
+        let { keywords, page = 0 } = request.params;
 
-        page = page || 0; limit = limit || 50;
-
-        var data = await MediaService.getList({
-            keywords, page, limit
+        var data = { medias, pages, currentPage } = await MediaService.getList({
+            keywords, page
         });
-        
+
         response.render('admin/media', { data: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
@@ -20,12 +18,10 @@ module.exports.index = async (request, response, next) => {
 
 module.exports.binddata = async (request, response, next) => {
     try {
-        let { keywords, page, limit } = request.body;
+        let { keywords, page = 0 } = request.body;
 
-        page = page || 0; limit = limit || 50;
-        console.log(keywords)
         var data = await MediaService.getList({
-            keywords, page, limit
+            keywords, page
         });
 
         response.render('admin/media/binddata', { data: data, layout: './admin/layouts/modal' });
@@ -41,9 +37,9 @@ module.exports.upload = async (request, response, next) => {
         }
         
         const promises = [];
-        console.log(request.files)
+
         for (var index = 0; index < request.files.length; index++) {
-            promises.push(MediaService.putMedia({
+            promises.push(MediaService.insert({
                 name: request.files[index].originalname.substr(0, request.files[index].originalname.lastIndexOf('.')) || request.files[index].originalname,
                 path: request.files[index].path.replace('src\\public\\', '').replace('src/public/', '').replaceAll('\\', '/'),
                 contentType: request.files[index].mimetype,

@@ -102,18 +102,14 @@ module.exports.edit = async (request, response, next) => {
         }
 
         const category = await CategoryService.getById(id);
-        const data = await CategoryService.getList({
-            id: ''
-        });
 
-        // const [category, data] = await Promise.all[
-        //     CategoryService.getById(id),
-        //     CategoryService.getList({
-        //         id: ''
-        //     })
-        // ];
+        if(!category){
+            return next(new Error('Không tìm thấy chuyên mục phù hợp.'));
+        }
 
-        response.render('admin/category/edit', { category: category, data: data, layout: './admin/layouts/modal' });
+        const parents = await CategoryService.getParents({ id: category._id, level: category.level });
+
+        response.render('admin/category/edit', { category: category, parents: parents, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -154,7 +150,7 @@ module.exports.editPost = async (request, response, next) => {
     }
 }
 
-module.exports.delete = async (request, response, next) => {
+module.exports.draft = async (request, response, next) => {
     try {
         let { id } = request.params;
 
@@ -165,8 +161,8 @@ module.exports.delete = async (request, response, next) => {
         const categoryFind = await CategoryService.getById(id);
 
         if (categoryFind) {
-            await CategoryService.deleteCategory(id, request.user.username);
-            return response.json({ success: true, message: 'Xóa chuyên mục thành công', cb: '/stv/category/binddata' });
+            await CategoryService.draft(id, request.user.username);
+            return response.json({ success: true, message: 'Chuyển nháp chuyên mục thành công', cb: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
@@ -186,8 +182,8 @@ module.exports.recover = async (request, response, next) => {
         const categoryFind = await CategoryService.getById(id);
 
         if (categoryFind) {
-            await CategoryService.recoverDeleteCategory(id, request.user.username);
-            return response.json({ success: true, message: 'Phục hồi dữ liệu chuyên mục thành công', cb: '/stv/category/binddata' });
+            await CategoryService.recover(id, request.user.username);
+            return response.json({ success: true, message: 'Hủy nháp chuyên mục thành công', cb: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });

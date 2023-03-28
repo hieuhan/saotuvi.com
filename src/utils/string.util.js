@@ -1,5 +1,7 @@
 const config = require('../configs');
 
+module.exports.NOIMAGE_PATH = config.NOIMAGE_PATH;
+
 module.exports.getSlug = (slug) => {
     try {
 
@@ -14,6 +16,26 @@ module.exports.getSlug = (slug) => {
         }
 
         return '';
+    } catch (error) {
+        console.log(error);
+        return Promise.reject(error);
+    }
+}
+
+module.exports.getImagePath = (image) => {
+    try {
+
+        if (image && image.trim().length > 0) {
+            let result = image;
+
+            while (result.startsWith('/')) {
+                result = result.substring(1);
+            }
+
+            return `${config.ROOT_PATH}${result}`;
+        }
+
+        return config.NOIMAGE_PATH;
     } catch (error) {
         console.log(error);
         return Promise.reject(error);

@@ -21,15 +21,15 @@
                 <div class="col-sm-6 mb-3"><label class="form-label" for="end-time">Chuyên mục cha</label>
                     <select class="form-select" name="parent">
                         <option value="">...</option>
-                        <%if (typeof (data) !='undefined' && data.length> 0) {
-                            for(var index = 0; index < data.length; index ++) {
-                                if(category.parent != null && data[index]._id.toString() == category.parent.toString()) {%>
-                                <option value="<%= data[index]._id %>" selected>
-                                    <%= data[index].name %>
+                        <%if (typeof (parents) !='undefined' && parents.length> 0) {
+                            for(var index = 0; index < parents.length; index ++) {
+                                if(typeof (category.parent) != 'undefined' && category.parent != null && parents[index]._id.toString() == category.parent.toString()) {%>
+                                <option value="<%= parents[index]._id %>" selected>
+                                    <%= parents[index].name %>
                                 </option>
-                                <%} else if (data[index]._id.toString() != category._id.toString()) { %>
-                                    <option value="<%= data[index]._id %>">
-                                        <%= data[index].name %>
+                                <%} else { %>
+                                    <option value="<%= parents[index]._id %>">
+                                        <%= parents[index].name %>
                                     </option>
                                 <%} } }%>
                     </select>
@@ -38,16 +38,16 @@
                     <label class="form-label">Thứ tự hiển thị</label>
                     <input class="form-control" name="displayOrder" value="<%= category.displayOrder%>" type="number" placeholder="Thứ tự hiển thị" />
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <label class="form-label" for="time-zone">Hình ảnh</label>
                     <div class="d-flex mb-3 hover-actions-trigger align-items-center">
                         <div class="file-thumbnail">
-                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.getSlug(category.image) %>" alt="" />
+                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.getImagePath(category.image) %>" alt="" />
                             <input class="form-control" name="image" value="<%= category.image %>" type="hidden" />
                         </div>
                         <div class="ms-3 flex-shrink-1 flex-grow-1">
                             <div class="hover-actions end-0 top-50 translate-middle-y">
-                                <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none select-media"
+                                <button class="btn btn-light border-300 btn-sm me-1 text-600 shadow-none popup" data-modal="media-modal"
                                     data-url="/stv/media" type="button" data-bs-toggle="tooltip" data-bs-placement="top"
                                     aria-label="Edit" data-bs-original-title="Edit">
                                     <img src="/admin/img/icons/edit-alt.svg" alt="" width="15">
@@ -56,6 +56,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-3"></div>
                 <div class="col-12">
                     <div class="border-bottom border-dashed my-3"></div>
                 </div>
