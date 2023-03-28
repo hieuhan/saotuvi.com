@@ -30,8 +30,14 @@
                             <label class="form-label">Chuyên mục chính<span class="text-danger">*</span></label>
                             <select name="category" class="form-select">
                                 <%if(typeof (categories) !='undefined' && categories.length> 0){
-                                    for(var index = 0; index < categories.length; index ++){%>
-                                        <option value="<%= categories[index]._id%>"<%= typeof(article.category) != 'undefined' && article.category.toString() == categories[index]._id.toString() ? ' selected' : '' %>><%= categories[index].name%></option>
+                                    for(var index = 0; index < categories.length; index ++){let level='';
+                                        const
+                                            levels=categories[index].level.split('/'); for(var i=0; i < levels.length; i++){
+                                                if(i> 0){
+                                                    level += '&nbsp;&nbsp;&nbsp;';
+                                                }
+                                            }%>
+                                        <option value="<%= categories[index]._id%>"<%= typeof(article.category) != 'undefined' && article.category.toString() == categories[index]._id.toString() ? ' selected' : '' %>><%- level%><%= categories[index].name%></option>
                                     <%}
                                  }%>
                             </select>
