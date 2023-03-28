@@ -1,17 +1,18 @@
 const { validationResult } = require('express-validator');
 const ArticleService = require('../services/article');
 const CategoryService = require('../services/category');
+//const { Article } = require('../models');
 
 module.exports.index = async (request, response, next) => {
     try {
+        //await Article.deleteMany();
         const { keywords = '', category = '', page = 0, isDraft = 0 } = request.query;
-        const limit = 3;
         const data = await Promise.all([
             CategoryService.getList({
                 id: ''
             }),
             ArticleService.getPage({
-                keywords, page, limit, isDraft
+                keywords, category, page, isDraft
             })
         ]);
 
@@ -26,12 +27,11 @@ module.exports.index = async (request, response, next) => {
 module.exports.binddata = async (request, response, next) => {
     try {
         let { keywords = '', category = '', page = 0, isDraft = 0 } = request.query;
-        const limit = 3;
         var data = { articles, pages, currentPage } = await ArticleService.getPage({
-            keywords, category, page, limit, isDraft
+            keywords, category, page, isDraft
         })
 
-        response.render('admin/article/binddata', { articles : data, layout: './admin/layouts/modal' });
+        response.render('admin/article/binddata', { articles: data, layout: './admin/layouts/modal' });
     } catch (error) {
         next(error);
     }
@@ -66,14 +66,15 @@ module.exports.createPost = async (request, response, next) => {
         if (!errors.isEmpty()) {
             return response.json({ success: false, error: errors.mapped() });
         }
-        
+
         let categories = [];
 
         categories.push(category);
 
-        if(subCategory && Array.isArray(subCategory)){
-            for(var index = 0; index < subCategory.length; index ++){
-                categories.push(subCategory[index]);
+        if (subCategory && Array.isArray(subCategory)) {
+            for (var index = 0; index < subCategory.length; index++) {
+                if (!categories.includes(subCategory[index]))
+                    categories.push(subCategory[index]);
             }
         }
 
@@ -81,7 +82,7 @@ module.exports.createPost = async (request, response, next) => {
 
         const result = await ArticleService.insert(article);
 
-        if(result){
+        if (result) {
             return response.json({ success: true, message: 'Thêm mới tin bài thành công', cb: '/stv/article/binddata' });
         }
 
@@ -124,7 +125,7 @@ module.exports.editPost = async (request, response, next) => {
         } = request.body;
 
         article.isIndex = isIndex == 1 ? true : false;
-        
+
         const errors = validationResult(request);
 
         if (!errors.isEmpty()) {
@@ -134,6 +135,20 @@ module.exports.editPost = async (request, response, next) => {
         const articleFind = await ArticleService.getById(id);
 
         if (articleFind) {
+
+            let categories = [];
+
+            categories.push(category);
+            
+            if (subCategory && Array.isArray(subCategory)) {
+                for (var index = 0; index < subCategory.length; index++) {
+                    if (!categories.includes(subCategory[index]))
+                        categories.push(subCategory[index]);
+                }
+            }
+
+            article.subCategory = categories;
+
             await ArticleService.update(article);
             return response.json({ success: true, message: 'Cập nhật bài viết thành công', cb: '/stv/article/binddata' });
         }

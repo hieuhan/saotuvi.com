@@ -5,15 +5,15 @@ module.exports = mongoose => {
             required: true,
             trim: true
         },
+        nameLower: { type: String, trim: true, lowercase: true, required: true },
         description: String,
         slug: String,
-        position: [
-            {
-                type: String,
-                enum: ['TOP', 'BOTTOM', 'LEFT', 'RIGHT'],
-                required: false
-            }
-        ],
+        position:
+        {
+            type: String,
+            enum: ['TOP', 'BOTTOM', 'LEFT', 'RIGHT'],
+            required: false
+        },
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
@@ -29,22 +29,30 @@ module.exports = mongoose => {
         treeOrder: String,
         displayOrder: Number,
         image: String,
-        isDeleted: { type: Boolean, default: false },
-        deletedBy: String,
-        deletedAt: Date,
+        isDraft: { type: Boolean, default: true },
         createdBy: String,
         createdAt: { type: Date, default: Date.now },
         updatedBy: String,
         updatedAt: Date,
-        recoverDeletedBy: String,
-        recoverDeletedAt: Date
+        draftedBy: String,
+        draftedAt: Date,
+        recoverDraftedBy: String,
+        recoverDraftedAt: Date
     },
         {
             collection: 'menus',
             timestamps: false
         });
 
-    menuSchema.index({ name: 'text', slug: 'text', treeOrder: 'text' });
+    menuSchema.index({ name: 'text', nameLower: 'text', slug: 'text', treeOrder: 'text' });
+
+    menuSchema.pre('save', async function (next) {
+        if (!this.isModified('name') || !this.isNew) return next();
+
+        this.nameLower = this.name.toLowerCase();
+
+        next();
+    });
 
     return mongoose.model('Menu', menuSchema);
 }

@@ -1,29 +1,31 @@
 <div class="rounded-top-lg py-3 ps-4 pe-6 bg-light">
-    <h4 class="mb-1">Thêm menu </h4>
+    <h4 class="mb-1">Cập nhật menu <%= menu.name%></h4>
 </div>
 <div class="p-4">
-    <form action="/stv/menu/create" method="put" data-ajax="true">
+    <form action="/stv/menu/edit" method="patch" data-ajax="true">
         <div class="card-body">
             <div class="row gx-2">
+                <input class="form-control" name="id" type="hidden" value="<%= menu._id%>" />
                 <div class="col-sm-6 mb-3"><label class="form-label" for="start-date">Tên menu</label>
-                    <input class="form-control to-slug" name="name" type="text" placeholder="Tên menu" />
+                    <input class="form-control to-slug" name="name" value="<%= menu.name%>" type="text" placeholder="Tên menu" />
                     <label for="name" class="form-check-label mb-0 text-danger"></label>
                 </div>
-                <div class="col-sm-6 mb-3"><label class="form-label" for="start-time">Mô tả</label>
-                    <input class="form-control" name="description" type="text" placeholder="Mô tả" />
+                <div class="col-sm-6 mb-3">
+                    <label class="form-label" for="start-time">Mô tả</label>
+                    <input class="form-control" name="description" value="<%= menu.description%>" type="text" placeholder="Mô tả" />
                 </div>
                 <div class="col-sm-6 mb-3">
                     <label class="form-label" for="end-date">Url</label>
-                    <input class="form-control get-slug" name="slug" type="text" placeholder="Url" />
+                    <input class="form-control get-slug" name="slug" value="<%= menu.slug%>" type="text" placeholder="Url" />
                     <label for="slug" class="form-check-label mb-0 text-danger"></label>
                 </div>
                 <div class="col-sm-6 mb-3"><label class="form-label" for="end-time">Menu cha</label>
                     <select class="form-select" name="parent">
                         <option value="">...</option>
-                        <%if (typeof (data) !='undefined' && typeof (data.menus) !='undefined' && data.menus.length> 0) {
-                            for(var index = 0; index < data.menus.length; index ++) {%>
-                                <option value="<%= data.menus[index]._id %>">
-                                    <%= data.menus[index].name %>
+                        <%if (typeof (parents) !='undefined' && parents.length> 0) {
+                            for(var index = 0; index < parents.length; index ++) {%>
+                                <option value="<%= parents[index]._id %>"<%= (typeof (menu.parent) !='undefined' && menu.parent != null && menu.parent.toString() == parents[index]._id.toString()) ? ' selected' : '' %>>
+                                    <%= parents[index].name %>
                                 </option>
                                 <%} }%>
                     </select>
@@ -36,8 +38,8 @@
                     <label class="form-label" for="time-zone">Hình ảnh</label>
                     <div class="d-flex mb-3 hover-actions-trigger align-items-center">
                         <div class="file-thumbnail">
-                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="" alt="" />
-                            <input class="form-control" name="image" type="hidden" />
+                            <img class="border h-100 w-100 fit-cover rounded-2 image-cover" src="<%= stringHelpers.getSlug(menu.image) %>" alt="" />
+                            <input class="form-control" name="image" value="<%= menu.image %>" type="hidden" />
                         </div>
                         <div class="ms-3 flex-shrink-1 flex-grow-1">
                             <div class="hover-actions end-0 top-50 translate-middle-y">
@@ -58,10 +60,10 @@
                     <label class="form-label">Chuyên mục</label>
                     <select class="form-select" name="category">
                         <option value="">...</option>
-                        <%if (typeof (data) !='undefined' && typeof (data.categories) !='undefined' && data.categories.length> 0) {
-                            for(var index = 0; index < data.categories.length; index ++) {%>
-                                <option value="<%= data.categories[index]._id %>">
-                                    <%= data.categories[index].name %>
+                        <%if (typeof (categories) !='undefined' && categories.length> 0) {
+                            for(var index = 0; index < categories.length; index ++) {%>
+                                <option value="<%= categories[index]._id %>"<%= menu.category.toString() == categories[index]._id.toString() ? ' selected' : '' %>>
+                                    <%= categories[index].name %>
                                 </option>
                                 <%} }%>
                     </select>

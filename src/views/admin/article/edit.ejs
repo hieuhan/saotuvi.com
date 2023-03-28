@@ -124,7 +124,7 @@
                                             }%>
                                             <li>
                                                 <div class="form-check">
-                                                    <input class="form-check-input" id="<%=categories[index]._id%>" name="subCategory"
+                                                    <input class="form-check-input" id="<%=categories[index]._id%>" name="subCategory[]"
                                                         type="checkbox" value="<%=categories[index]._id%>"<%= typeof(article.subCategory) != 'undefined' && article.subCategory.includes(categories[index]._id) ? ' checked' : ''%> />
                                                     <label class="form-check-label" for="<%=categories[index]._id%>">
                                                         <%=level%><%=categories[index].name%>

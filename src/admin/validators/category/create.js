@@ -6,9 +6,9 @@ module.exports = [
         .not().isEmpty().withMessage('Vui lòng nhập tên chuyên mục')
         .isLength({ max: 255 }).withMessage('Tên chuyên mục khuyến nghị không vượt quá 255 ký tự')
         .custom(async name => {
-            const categoryExist = await Category.findOne({'name': {'$regex': name, $options:'i'}})
+            const categoryExist = await Category.findOne({ 'nameLower': name.toLowerCase().trim() })
             if (categoryExist) {
-                return Promise.reject(`Tên chuyên mục ${name} đã tồn tại`);
+                return Promise.reject(`Tên chuyên mục ${ name } đã tồn tại`);
             }
             return true;
         }),

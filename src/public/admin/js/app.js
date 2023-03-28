@@ -9,7 +9,7 @@ var app = {
             try {
                 var self = $(this), urlRequest = self.data('url') || '',
                     modal = $(`#${self.data('modal') || 'modal'}`), modalDialog = modal.find('.modal-dialog').first(),
-                    modalSize = self.data('modal-size') || 'modal-lg';
+                    modalSize = self.data('modal-size') || 'modal-lg', editor = self.data('editor') || '';
                 modalDialog.attr('class', `modal-dialog ${modalSize} modal-dialog-centered`);
 
                 if (urlRequest.trim().length > 0) {
@@ -20,7 +20,8 @@ var app = {
                     }).then((response) => {
                         const modalContent = modal.find('.modal-body').first();
                         modalContent.html(response);
-                        app.initCkEditor('.ckeditor');
+                        if(editor.trim().length > 0)
+                            app.initCkEditor(editor);
                         modal.modal('show');
                     });
                 }
@@ -191,7 +192,8 @@ var app = {
                 var self = $(this), urlRequest = self.data('url') || '',
                 method = self.data('method') || 'POST', dataType = self.data('type') || 'json',
                     confirmText = self.is(':checked') ? 'Xác nhận chuyển thành dữ liệu nháp ?' : 'Xác nhận bỏ dữ liệu nháp ?';
-                if(urlRequest.trim().length > 0 && confirm(confirmText)){
+                    const isValid = urlRequest.trim().length > 0 && confirm(confirmText)
+                if(isValid){
                     app.fetchData({
                         type: method,
                         url: urlRequest,
@@ -210,6 +212,7 @@ var app = {
                         }
                     });
                 }
+                self.prop('checked', isValid)
             } catch (error) {
                 console.error(error);
             }

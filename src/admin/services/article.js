@@ -46,7 +46,7 @@ class ArticleService {
                     draftedBy: 1,
                     draftedAt: 1
                 }).populate('subCategory', '_id name  slug')
-                    .skip(page * (limit - 1))
+                    .skip(page > 0 ? ((page - 1) * limit) : 0)
                     .limit(limit)
                     .sort({
                         publishedAt: 'desc',
@@ -54,6 +54,8 @@ class ArticleService {
                     }),
                 Article.countDocuments(query)
             ]);
+
+            page = page <= 0 ? 1 : page;
 
             return { list: data[0], pages: Math.ceil(data[1] / limit), currentPage: page };
         } catch (error) {
@@ -64,7 +66,6 @@ class ArticleService {
 
     static insert = async (article) => {
         try {
-            console.log(article)
             return await Article.create(article);
         } catch (error) {
             console.error(`:::ArticleService.insert:::${error}`);

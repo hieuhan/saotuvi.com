@@ -4,7 +4,7 @@ const CategoryService = require('../services/category');
 
 module.exports.index = async (request, response, next) => {
     try {
-        //await Category.updateMany({isDeleted : false});
+        //await Category.deleteMany();
         const { keywords = '', page = 0, limit = 50, isDeleted = 0 } = request.query;
 
         // const data =  { categories, totalPages, currentPage } = await CategoryService.getList({
@@ -73,15 +73,17 @@ module.exports.createPost = async (request, response, next) => {
             h1Tag, canonical, isIndex
         } = request.body;
 
-        if (category.parent.trim().length <= 0) {
-            category.parent = null;
-        }
-
         const errors = validationResult(request);
 
         if (!errors.isEmpty()) {
             return response.json({ success: false, error: errors.mapped() });
         }
+
+        if (category.parent.trim().length <= 0) {
+            category.parent = null;
+        }
+
+        category.nameLower = name.toLowerCase();
 
         await CategoryService.putCategory(category);
 
@@ -126,10 +128,6 @@ module.exports.editPost = async (request, response, next) => {
             h1Tag, canonical, isIndex
         } = request.body;
 
-        if (category.parent.trim().length <= 0) {
-            category.parent = null;
-        }
-
         const errors = validationResult(request);
 
         if (!errors.isEmpty()) {
@@ -139,17 +137,12 @@ module.exports.editPost = async (request, response, next) => {
         const categoryFind = await CategoryService.getById(id);
 
         if (categoryFind) {
-            // categoryFind.name=category.name;
-            // categoryFind.description = category.description;
-            // categoryFind.slug = category.slug;
-            // categoryFind.parent = category.parent;
-            // categoryFind.displayOrder = category.displayOrder;
-            // categoryFind.image = category.image;
-            // categoryFind.metaTitle = category.metaTitle;
-            // categoryFind.metaDescription = category.metaDescription;
-            // categoryFind.metaKeywords = category.metaKeywords;
-            // categoryFind.h1Tag = category.h1Tag;
-            // categoryFind.canonical = category.canonical;
+
+            category.nameLower = name.toLowerCase();
+
+            if (category.parent.trim().length <= 0) {
+                category.parent = null;
+            }
 
             await CategoryService.patchCategory(category);
             return response.json({ success: true, message: 'Tạo chuyên mục thành công', cb: '/stv/category/binddata' });

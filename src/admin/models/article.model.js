@@ -44,7 +44,7 @@ module.exports = mongoose => {
             h1Tag: String,
             canonical: String,
             isIndex: { type: Boolean, default: true },
-            isDraft: { type: Boolean, default: false },
+            isDraft: { type: Boolean, default: true },
             createdBy: String,
             createdAt: { type: Date, default: Date.now },
             updatedBy: String,
@@ -52,11 +52,11 @@ module.exports = mongoose => {
             draftedBy: String,
             draftedAt: Date,
             recoverDraftedBy: String,
-            recoverDraftedAt: Date,
-            publishedBy: String,
-            publishedAt: Date,
-            republishedBy: String,
-            republishedAt: Date
+            recoverDraftedAt: Date
+            //publishedBy: String,
+            //publishedAt: Date,
+            //republishedBy: String,
+            //republishedAt: Date
         },
         {
             collection: 'articles',

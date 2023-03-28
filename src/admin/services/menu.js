@@ -13,9 +13,8 @@ class MenuService {
     static getList = async ({
         id = '',
         keywords = '',
-        isDeleted = 0,
-        page = 0,
-        limit = 50
+        position = '',
+        isDraft = 0
     }) => {
         try {
             const query = {};
@@ -28,8 +27,12 @@ class MenuService {
                 query['treeOrder'] = new RegExp(id, 'i');
             }
 
-            if (isDeleted == 1) {
-                query['isDeleted'] = true;
+            if (position.trim().length > 0) {
+                query['position'] = position;
+            }
+
+            if (isDraft == 1) {
+                query['isDraft'] = true;
             }
 
             const menus = await Menu.find(query, {
@@ -41,14 +44,12 @@ class MenuService {
                 parentSlug: 1,
                 level: 1,
                 treeOrder: 1,
+                position: 1,
                 displayOrder: 1,
-                isDeleted: 1,
+                isDraft: 1,
                 createdAt: 1,
-                deletedAt: 1,
-                deletedBy: 1
             }).populate('parent', '_id name')
-                .skip(page * (limit - 1))
-                .limit(limit)
+                .populate('category', '_id name slug')
                 .sort({
                     treeOrder: 'asc'
                 });
@@ -60,7 +61,42 @@ class MenuService {
         }
     }
 
-    static putMenu = async (menu) => {
+    static getParents = async ({
+        id = '',
+        level = ''
+    }) => {
+        try {
+            const query = {};
+
+            query['level'] = { $exists: true };
+            query['$expr'] = { $lte: [{ $strLenCP: '$level' }, level.toString().length] };
+            query['_id'] = { $ne: id };
+
+            const menus = await Menu.find(query, {
+                name: 1,
+                description: 1,
+                slug: 1,
+                image: 1,
+                parent: 1,
+                parentSlug: 1,
+                level: 1,
+                treeOrder: 1,
+                displayOrder: 1,
+                isDraft: 1,
+                createdAt: 1
+            })
+                .sort({
+                    treeOrder: 'asc'
+                });
+
+            return menus;
+        } catch (error) {
+            console.error(`MenuService::getParents::${error}`);
+            return Promise.reject(error);
+        }
+    }
+
+    static insert = async (menu) => {
         try {
             const createResult = await Menu.create(menu);
             if (createResult) {
@@ -72,7 +108,7 @@ class MenuService {
                 });
             }
         } catch (error) {
-            console.error(`:::MenuService.putMenu:::${error}`);
+            console.error(`:::MenuService.insert:::${error}`);
             return Promise.reject(error);
         }
     }
@@ -104,7 +140,7 @@ class MenuService {
         }
     }
 
-    static patchMenu = async (menu) => {
+    static update = async (menu) => {
         try {
             const patchResult = await Menu.updateOne({ _id: menu.id }, menu);
 
@@ -118,33 +154,33 @@ class MenuService {
             }
 
         } catch (error) {
-            console.error(`:::MenuService.patchMenu:::${error}`);
+            console.error(`:::MenuService.update:::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static delete = async (id, deletedBy) => {
+    static draft = async (id, draftedBy) => {
         try {
-            return await Menu.updateOne({ _id: id, isDeleted: false }, {
-                isDeleted: true,
-                deletedBy: deletedBy,
-                deletedAt: new Date()
+            return await Menu.updateOne({ _id: id, isDraft: false }, {
+                isDraft: true,
+                draftedBy: draftedBy,
+                draftedAt: new Date()
             })
         } catch (error) {
-            console.error(`MenuService::delete::${error}`);
+            console.error(`MenuService::draft::${error}`);
             return Promise.reject(error);
         }
     }
 
-    static recoverDelete = async (id, recoverDeletedBy) => {
+    static recover = async (id, recoverDraftedBy) => {
         try {
-            return await Menu.updateOne({ _id: id, isDeleted: true }, {
-                isDeleted: false,
-                recoverDeletedBy: recoverDeletedBy,
-                recoverDeletedAt: new Date()
+            return await Menu.updateOne({ _id: id, isDraft: true }, {
+                isDraft: false,
+                recoverDraftedBy: recoverDraftedBy,
+                recoverDraftedAt: new Date()
             })
         } catch (error) {
-            console.error(`MenuService::recoverDelete::${error}`);
+            console.error(`MenuService::recover::${error}`);
             return Promise.reject(error);
         }
     }
