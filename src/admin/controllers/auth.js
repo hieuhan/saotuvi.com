@@ -7,6 +7,17 @@ const authConfig = require('../../configs/auth');
 
 module.exports.login = async (request, response, next) => {
     try {
+
+        const accessTokenCookie = request.cookies[authConfig.COOKIE_JWT_ACCESS_SECRET_NAME];
+
+        if (accessTokenCookie) {
+            const payload = jwt.verifyAccessToken(accessTokenCookie);
+
+            if (payload.userId){
+                return response.redirect('/stv');
+            }
+        }
+
         // const hash = await bcrypt.hashPassword('Hthmanutd1011$');
         //await User.deleteMany();
         //seed
@@ -28,9 +39,12 @@ module.exports.login = async (request, response, next) => {
 
 module.exports.loginPost = async (request, response, next) => {
     try {
-        const { username, password, comeback } = request.body;
 
-        const dataInput = { username, password };
+        if(request.user){
+            return response.redirect('/stv');
+        }
+
+        const dataInput = { username, password, returnUrl } = request.body;
 
         const errors = validationResult(request);
 
@@ -57,7 +71,7 @@ module.exports.loginPost = async (request, response, next) => {
         }
 
         const passwordIsValid = await bcrypt.passwordCompare(password, userExist.password);
-        console.log(passwordIsValid);
+
         if (!passwordIsValid) {
             return response.render('admin/auth/login', {
                 error: {},
@@ -68,7 +82,7 @@ module.exports.loginPost = async (request, response, next) => {
         }
 
         const { accessToken, refreshToken } = await jwt.generateTokens(userExist._id, userExist.username);
-        console.log({ accessToken, refreshToken });
+
         if (accessToken && refreshToken) {
             response.cookie(authConfig.COOKIE_JWT_ACCESS_SECRET_NAME, accessToken, {
                 httpOnly: true,

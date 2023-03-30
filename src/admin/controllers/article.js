@@ -6,7 +6,7 @@ const CategoryService = require('../services/category');
 module.exports.index = async (request, response, next) => {
     try {
         //await Article.deleteMany();
-        const { keywords = '', category = '', page = 0, isDraft = 0 } = request.query;
+        const dataInput = { keywords = '', category = '', page = 0, isDraft = 0 } = request.query;
         const data = await Promise.all([
             CategoryService.getList({
                 id: ''
@@ -15,8 +15,6 @@ module.exports.index = async (request, response, next) => {
                 keywords, category, page, isDraft
             })
         ]);
-
-        const dataInput = { keywords, category, page, isDraft };
 
         response.render('admin/article', { categories: data[0], articles: data[1], dataInput: dataInput, layout: './admin/layouts/default' });
     } catch (error) {

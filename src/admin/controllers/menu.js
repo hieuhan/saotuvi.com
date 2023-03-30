@@ -5,7 +5,7 @@ const CategoryService = require('../services/category');
 
 module.exports.index = async (request, response, next) => {
     try {
-        const { keywords = '', page = 0, position = '', isDraft = 0 } = request.query;
+        const { keywords = '', page = 0, position = 'TOP', isDraft = 0 } = request.query;
 
         const data = await MenuService.getList({
             keywords, position, page, isDraft

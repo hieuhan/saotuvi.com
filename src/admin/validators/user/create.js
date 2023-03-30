@@ -2,6 +2,15 @@ const { body } = require('express-validator');
 const { User } = require('../../models');
 
 module.exports = [
+    body('username')
+        .not().isEmpty().withMessage('Vui lòng nhập tên truy cập')
+        .custom(async username => {
+            const userExist = await User.findOne({ username })
+            if (userExist) {
+                return Promise.reject(`Tên truy cập ${ username } đã được sử dụng.`);
+            }
+            return true;
+        }),
     body('email')
         .not().isEmpty().withMessage('Vui lòng nhập email')
         .normalizeEmail()

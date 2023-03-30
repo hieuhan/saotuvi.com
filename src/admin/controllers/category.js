@@ -5,19 +5,18 @@ const CategoryService = require('../services/category');
 module.exports.index = async (request, response, next) => {
     try {
         //await Category.deleteMany();
-        const { keywords = '', page = 0, limit = 50, isDeleted = 0 } = request.query;
+        const { keywords = '', id = '', page = 0, isDraft = 0 } = request.query;
 
-        // const data =  { categories, totalPages, currentPage } = await CategoryService.getList({
-        //     keywords, page, limit, isDeleted
-        // });
+        const data = await Promise.all([
+            CategoryService.getList({}),
+            CategoryService.getList({
+                keywords, id, page, isDraft
+            })
+        ]);
 
-        const data = await CategoryService.getList({
-            keywords, page, limit, isDeleted
-        });
+        const dataInput = { keywords, id, page, isDraft };
 
-        const dataInput = { keywords, page, limit, isDeleted };
-
-        response.render('admin/category', { data: data, dataInput: dataInput, layout: './admin/layouts/default' });
+        response.render('admin/category', { categories: data[0], data: data[1], dataInput: dataInput, layout: './admin/layouts/default' });
     } catch (error) {
         next(error);
     }
@@ -162,7 +161,7 @@ module.exports.draft = async (request, response, next) => {
 
         if (categoryFind) {
             await CategoryService.draft(id, request.user.username);
-            return response.json({ success: true, message: 'Chuyển nháp chuyên mục thành công', cb: '/stv/category/binddata' });
+            return response.json({ success: true, message: 'Chuyển nháp chuyên mục thành công', dataUrl: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });
@@ -183,7 +182,7 @@ module.exports.recover = async (request, response, next) => {
 
         if (categoryFind) {
             await CategoryService.recover(id, request.user.username);
-            return response.json({ success: true, message: 'Hủy nháp chuyên mục thành công', cb: '/stv/category/binddata' });
+            return response.json({ success: true, message: 'Hủy nháp chuyên mục thành công', dataUrl: '/stv/category/binddata' });
         }
 
         return response.json({ success: false, message: 'Vui lòng thử lại sau.' });

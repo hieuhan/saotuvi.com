@@ -3,12 +3,8 @@ const { User } = require('../models');
 
 module.exports.index = async (request, response, next) => {
     try {
-        let { keywords, page, size } = request.query;
-
-        if (!keywords) keywords = '';
-        if (!page) page = 1;
-        if (!size) size = 50;
-
+        let dataInput = { keywords = '', page = 0 } = request.query;
+ 
         let searchOption = {};
 
         if (keywords.trim().length > 0) {

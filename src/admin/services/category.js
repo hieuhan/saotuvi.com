@@ -11,9 +11,9 @@ class CategoryService {
     }
 
     static getList = async ({
-        id = '',
+        id ='',
         keywords = '',
-        isDeleted = 0,
+        isDraft = 0,
         page = 0,
         limit = 50
     }) => {
@@ -28,8 +28,8 @@ class CategoryService {
                 query['treeOrder'] = new RegExp(id, 'i');
             }
 
-            if (isDeleted == 1) {
-                query['isDeleted'] = true;
+            if (isDraft == 1) {
+                query['isDraft'] = true;
             }
             // const data = await Promise.all([
             //     Category.find(query, {

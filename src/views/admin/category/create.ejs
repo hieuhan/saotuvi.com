@@ -21,9 +21,15 @@
                     <select class="form-select" name="parent">
                         <option value="">...</option>
                         <%if (typeof (data) !='undefined' && data.length> 0) {
-                            for(var index = 0; index < data.length; index ++) {%>
+                            for(var index = 0; index < data.length; index ++) {
+                                let level='' ; const
+                                            levels=data[index].level.split('/'); for(var i=0; i < levels.length; i++){
+                                                if(i> 0){
+                                                    level += '&nbsp;&nbsp;&nbsp;';
+                                                }
+                                            }%>
                                 <option value="<%= data[index]._id %>">
-                                    <%= data[index].name %>
+                                    <%- level%><%= data[index].name %>
                                 </option>
                                 <%} }%>
                     </select>

@@ -21,18 +21,21 @@ module.exports = mongoose => {
             require: true,
             //select: false
         },
+        avatar: String,
         buildIn: { type: Boolean, default: false },
-        isDeleted: { type: Boolean, default: false },
         // roles: {
         //     type: Array,
         //     enum: ["user", "admin"],
         //     default: ['user']
         // },
         lastLoginAt: { type: Date },
-        deletedAt: { type: Date },
         createdAt: { type: Date, default: Date.now },
-        updatedAt: { type: Date }
-
+        updatedAt: { type: Date },
+        isDraft: { type: Boolean, default: true },
+        draftedBy: String,
+        draftedAt: Date,
+        recoverDraftedBy: String,
+        recoverDraftedAt: Date
     },
         {
             collection: 'users',
